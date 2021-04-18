@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerInput : MonoBehaviour
 {
+    [SerializeField]
+    private bool aimLock = false;
+
     private bool isAiming;
     private Vector2 mouseAxis;
     private float horizontal, vertical;
@@ -13,7 +16,7 @@ public class PlayerInput : MonoBehaviour
         horizontal = Input.GetAxis("Horizontal"); 
         vertical = Input.GetAxis("Vertical");
         mouseAxis = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-        isAiming = Input.GetMouseButton(1);
+        isAiming = aimLock ? true : Input.GetMouseButton(1);
     }
 
     public float GetHorizontal() 
