@@ -9,7 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d74543b849ae2b42892dc713bc691c4, type: 3}
+  m_Script: {fileID: 11500000, guid: 2067f61f1372a884c8e3abd7bf68c174, type: 3}
   m_Name: ShotGun
   m_EditorClassIdentifier: 
   id: ShotGun
+  description: ShotGun is dangeeeeer......
+  weight: 1
+  category: 0
+  damage: 10
+  fireMode: 0

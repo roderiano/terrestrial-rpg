@@ -9,7 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d74543b849ae2b42892dc713bc691c4, type: 3}
-  m_Name: SMG
+  m_Script: {fileID: 11500000, guid: 2dd9995684a4ba547829dae96e9a0452, type: 3}
+  m_Name: Civil Pants
   m_EditorClassIdentifier: 
-  id: SMG
+  id: Civil Pants
+  description: A random Civil Pants
+  weight: 0
+  category: 2
+  armorType: 2
+  physicalResistence: 0

@@ -10,13 +10,19 @@ public class PlayerInput : MonoBehaviour
     private bool isAiming;
     private Vector2 mouseAxis;
     private float horizontal, vertical;
+    private PlayerStats playerStats;
+
+    void Start()
+    {
+        playerStats = GetComponent<PlayerStats>();
+    }
 
     public void CaptureInputs() 
     {
         horizontal = Input.GetAxis("Horizontal"); 
         vertical = Input.GetAxis("Vertical");
         mouseAxis = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-        isAiming = aimLock ? true : Input.GetMouseButton(1);
+        isAiming = aimLock ? true : Input.GetMouseButton(1) && playerStats.GetFireGun();
     }
 
     public float GetHorizontal() 

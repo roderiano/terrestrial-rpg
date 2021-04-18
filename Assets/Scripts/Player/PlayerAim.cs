@@ -13,6 +13,7 @@ public class PlayerAim : MonoBehaviour
 
     private Animator animator;
     private PlayerInput playerInput;
+    private PlayerStats playerStats;
 
     void Start()
     {
