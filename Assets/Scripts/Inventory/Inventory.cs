@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class Inventory : MonoBehaviour
 {
@@ -41,22 +42,21 @@ public class Inventory : MonoBehaviour
 
     private void RefreshSlotsDisplay() 
     {
-        Transform slotsContent = inventoryCanvas.Find("Slots/Viewport/Content");
+        Transform slotsContent = inventoryCanvas.Find("ItemsPanel/SlotsView/Viewport/Content");
         foreach (Transform slot in slotsContent)
             GameObject.Destroy(slot.gameObject);
 
         foreach(Slot slot in slots)
         {
             GameObject slotInstance = Instantiate(slotDisplay, Vector3.zero, Quaternion.identity, slotsContent);
-            slotInstance.GetComponent<Button>().onClick.AddListener(() => SetItemDetailDisplay(slot));
-            slotInstance.GetComponent<Button>().onClick.AddListener(() => UseItem(slot));
+            slotInstance.GetComponent<SlotButton>().SetSlotObject(slot); 
         }
     }
 
     public void SetItemDetailDisplay(Slot slot) 
     {
-		inventoryCanvas.Find("ItemDetail/Name").GetComponent<Text>().text = slot.item.name;
-        inventoryCanvas.Find("ItemDetail/Description").GetComponent<Text>().text = slot.item.description;
+		inventoryCanvas.Find("ItemsPanel/ItemDetail/Name").GetComponent<TextMeshProUGUI>().SetText(slot.item.name);
+        inventoryCanvas.Find("ItemsPanel/ItemDetail/Description").GetComponent<TextMeshProUGUI>().SetText(slot.item.description);
     }
 
     public void UseItem(Slot slot) 
