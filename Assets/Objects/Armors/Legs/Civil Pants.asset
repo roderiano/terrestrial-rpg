@@ -15,6 +15,7 @@ MonoBehaviour:
   id: Civil Pants
   description: A random Civil Pants
   weight: 0
+  icon: {fileID: 21300000, guid: a3b69ead0e23d34408070624700a6df6, type: 3}
   category: 2
   armorType: 2
   physicalResistence: 0

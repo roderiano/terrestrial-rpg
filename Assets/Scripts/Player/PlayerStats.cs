@@ -44,22 +44,31 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
-    public void SetArmor(Item item) 
+    public List<Item> GetArmorSet() 
     {
-        switch (((Armor)item).armorType)
-        {
-            case ArmorType.Head:
-                headArmor = item;
-                playerArmor.SetHead(item);
-                break;
-            case ArmorType.Chest:
-                chestArmor = item;
-                playerArmor.SetChest(item);
-                break;
-            case ArmorType.Legs:
-                legsArmor = item;
-                playerArmor.SetLegs(item);
-                break;
-        }
+        List<Item> armorList = new List<Item>();
+        armorList.Add(headArmor);
+        armorList.Add(chestArmor);
+        armorList.Add(legsArmor);
+
+        return armorList;
+    }
+
+    public void SetHead(Item item) 
+    {
+        headArmor = item;
+        playerArmor.SetHead(item);
+    }
+    
+    public void SetChest(Item item) 
+    {
+        chestArmor = item;
+        playerArmor.SetChest(item);
+    }
+
+    public void SetLegs(Item item) 
+    {
+        legsArmor = item;
+        playerArmor.SetLegs(item);
     }
 }

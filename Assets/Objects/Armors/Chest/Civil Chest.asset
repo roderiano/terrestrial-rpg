@@ -15,6 +15,7 @@ MonoBehaviour:
   id: Civil Chest
   description: A random civil chest armor
   weight: 0
+  icon: {fileID: 21300000, guid: a8f622f691718fa4abecff94daea3e5b, type: 3}
   category: 2
   armorType: 1
   physicalResistence: 2

@@ -12,7 +12,11 @@ public class PlayerArmor : MonoBehaviour
         bool active;        
         foreach (Transform armor in headArmors)
         {
-            active = armor.name == item.id ? true : false;
+            if(item != null)
+                active = armor.name == item.id ? true : false;
+            else
+                active = false;
+
             armor.gameObject.SetActive(active);
         }
     }
@@ -23,7 +27,11 @@ public class PlayerArmor : MonoBehaviour
         bool active;        
         foreach (Transform armor in chestArmors)
         {
-            active = armor.name == item.id ? true : false;
+            if(item != null)
+                active = armor.name == item.id ? true : false;
+            else
+                active = false;
+
             armor.gameObject.SetActive(active);
         }
     }
@@ -34,7 +42,11 @@ public class PlayerArmor : MonoBehaviour
         bool active;        
         foreach (Transform armor in LegsArmors)
         {
-            active = armor.name == item.id ? true : false;
+            if(item != null)
+                active = armor.name == item.id ? true : false;
+            else
+                active = false;
+
             armor.gameObject.SetActive(active);
         }
     }

@@ -13,6 +13,7 @@ public abstract class Item : ScriptableObject
     public string id;
     public string description;
     public float weight;
+    public Sprite icon;
 
     [HideInInspector]
     public ItemCategory category;
