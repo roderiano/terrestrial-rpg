@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.Animations.Rigging;
 using UnityEngine;
+using Cinemachine;
 
 public class PlayerAim : MonoBehaviour
 {
@@ -21,7 +22,7 @@ public class PlayerAim : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
     }
 
-    void Update()
+    public void Aim()
     {
         bool isAiming = playerInput.IsAiming();
         float aimWeight = isAiming ? 1f : 0f;
@@ -31,6 +32,5 @@ public class PlayerAim : MonoBehaviour
         bodyAimLayer.weight = aimWeight;
         handAimLayer.weight = aimWeight;
         weapons.gameObject.SetActive(isAiming);
-
     }
 }

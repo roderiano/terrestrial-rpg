@@ -7,7 +7,7 @@ public class PlayerInput : MonoBehaviour
     [SerializeField]
     private bool aimLock = false;
 
-    private bool isAiming;
+    private bool isAiming, inventory;
     private Vector2 mouseAxis;
     private float horizontal, vertical;
     private PlayerStats playerStats;
@@ -23,6 +23,7 @@ public class PlayerInput : MonoBehaviour
         vertical = Input.GetAxis("Vertical");
         mouseAxis = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
         isAiming = aimLock ? true : Input.GetMouseButton(1) && playerStats.GetFireGunSlot() != null;
+        inventory = Input.GetKeyDown(KeyCode.Tab);
     }
 
     public float GetHorizontal() 
@@ -43,5 +44,10 @@ public class PlayerInput : MonoBehaviour
     public bool IsAiming() 
     {
         return isAiming;
+    }
+
+    public bool Inventory() 
+    {
+        return inventory;
     }
 }
