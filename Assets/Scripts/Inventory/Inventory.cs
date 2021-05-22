@@ -10,21 +10,28 @@ using TMPro;
 /// </summary>
 public class Inventory : MonoBehaviour
 {
+    [Header("User Interface")]
     [SerializeField]
     private Transform inventoryCanvas;
     [SerializeField]
     private GameObject slotButton;
+    [SerializeField]
+    private SlotButton chestSlotBuild, legsSlotBuild, fireGunSlotBuild;
 
     private PlayerStats stats;
+    private PlayerArmor armor;
+    private PlayerWeapons weapons;
     private List<Slot> slots = new List<Slot>();
 
     void Start()
     {
         stats = GetComponent<PlayerStats>();
+        armor = GetComponent<PlayerArmor>();
+        weapons = GetComponent<PlayerWeapons>();
     }
 
     /// <summary>
-    /// Adds a item amount.
+    /// Adds <paramref name="amount"/> or create a <c>Slot</c> for <paramref name="item"/> object.
     /// </summary>
     /// <param name="item">Item to add.</param>
     /// <param name="amount">Item amount.</param>
@@ -50,27 +57,59 @@ public class Inventory : MonoBehaviour
     }
 
     /// <summary>
-    /// Delete all UI SlotButton and instantiate a SlotButton for each Inventory slot.
+    /// Delete all UI SlotButton`s and instantiate a SlotButton for each inventory Slot not equiped.
+    /// For equiped Slot`s in PlayerStats, their objects are set in SlotButton components.
     /// </summary>
     private void RefreshSlotButtons() 
     {
+        chestSlotBuild.SetSlotObject(null);
+        legsSlotBuild.SetSlotObject(null);
+        fireGunSlotBuild.SetSlotObject(null);
+
         Transform slotsContent = inventoryCanvas.Find("ItemsPanel/SlotsView/Viewport/Content");
         foreach (Transform slot in slotsContent)
             GameObject.Destroy(slot.gameObject);
 
         foreach(Slot slot in slots)
         {
-            if(!stats.GetArmorSet().Contains(slot.item))
+            bool canInstantiate = true;
+            if(stats.GetArmorSetSlots().Contains(slot))
+                canInstantiate = false;
+
+            if(stats.GetFireGunSlot() == slot)
+                canInstantiate = false;
+
+            if(canInstantiate)
             {
-               GameObject slotInstance = Instantiate(slotButton, Vector3.zero, Quaternion.identity, slotsContent);
+                GameObject slotInstance = Instantiate(slotButton, Vector3.zero, Quaternion.identity, slotsContent);
                 slotInstance.GetComponent<SlotButton>().SetSlotObject(slot);  
+            }
+            else
+            {
+                if(slot.item.category == ItemCategory.Armor)
+                {
+
+                    switch(((Armor)slot.item).armorType)
+                    {
+                        case ArmorType.Chest:
+                            chestSlotBuild.SetSlotObject(slot);
+                            break;
+                        case ArmorType.Legs:
+                            legsSlotBuild.SetSlotObject(slot);
+                            break;
+                    }
+                }
+                else if(slot.item.category == ItemCategory.FireGun)
+                {
+                    fireGunSlotBuild.SetSlotObject(slot);
+                }
             }
         }
     }
 
     /// <summary>
     /// Refresh item detail UI.
-    /// If slot param is null item details components has blank.
+    /// If <paramref name="slot"/> param is null, item details components has blank.
     /// </summary>
     /// <param name="slot">Slot reference to set values.</param>
     public void RefreshItemDetailComponents(Slot slot) 
@@ -83,53 +122,33 @@ public class Inventory : MonoBehaviour
     }
 
     /// <summary>
-    /// Use a Item.
+    /// Use item of <paramref name="slot"/>.
+    /// Refresh all components nedeed with new interaction. 
     /// </summary>
     /// <param name="slot">Slot reference to use.</param>
     public void UseItem(Slot slot) 
     {
+        Slot slotReference;
         switch (slot.item.category)
         {  
             case ItemCategory.FireGun:
-                stats.SetFireGun(slot.item);
-                inventoryCanvas.Find("BuildPanel/Weapons/PrimaryWeaponSlotButton").GetComponent<SlotButton>().SetSlotObject(slot);
+                slotReference = stats.GetFireGunSlot() == slot ? null : slot;
+                stats.SetFireGunSlot(slotReference);
+                weapons.EnableFireGun(slotReference);
                 break;
-            case ItemCategory.Armor:
-                switch (((Armor)slot.item).armorType)
-                {
-                    case ArmorType.Head:
-                        if(slot.item == stats.GetArmor(ArmorType.Head))
-                            stats.SetHead(null);
-                        else
-                            stats.SetHead(slot.item);
-                        
-                        break;
-                    case ArmorType.Chest:
-                        if(slot.item == stats.GetArmor(ArmorType.Chest))
-                            stats.SetChest(null);
-                        else
-                            stats.SetChest(slot.item);
 
-                        inventoryCanvas.Find("BuildPanel/Armor/ChestSlotButton").GetComponent<SlotButton>().SetSlotObject(slot);
-                        break;
-                    case ArmorType.Legs:
-                        if(slot.item == stats.GetArmor(ArmorType.Legs))
-                            stats.SetLegs(null);
-                        else
-                            stats.SetLegs(slot.item);
-                        
-                        inventoryCanvas.Find("BuildPanel/Armor/LegsSlotButton").GetComponent<SlotButton>().SetSlotObject(slot);
-                        break;
-                }
+            case ItemCategory.Armor:
+                slotReference = stats.GetArmorSetSlots().Contains(slot) ? null : slot;
+                stats.SetArmorSlot(slotReference, ((Armor)slot.item).armorType);
+                armor.EnableArmor(slotReference, ((Armor)slot.item).armorType);
                 break;
         }
 
         RefreshSlotButtons();
-
     }
 
     /// <summary>
-    /// Get Item when collider with ItemDrop component enter.
+    /// Get Item when collider with ItemDrop component.
     /// </summary>
     public void OnTriggerEnter(Collider collider) 
     {
@@ -151,11 +170,13 @@ public class Slot
 {
     public Item item;
     public int amount;
+    public string uuid;
 
     public Slot(Item item, int amount) 
     {
         this.item = item;
         this.amount = amount;
+        this.uuid = System.Guid.NewGuid().ToString();
     }
 
     public void AddAmount(int value) 

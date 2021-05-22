@@ -19,16 +19,19 @@ public class PlayerWeapons : MonoBehaviour
             rightArmIK.data.target.position = refRightHand.position;
             rightArmIK.data.target.rotation = refRightHand.rotation;
         }
-        
     }
     
-    public void SetFireGun(Item item)
+    public void EnableFireGun(Slot slot)
     {
         // Set FireGun
         bool active;        
         foreach (Transform weapon in weapons)
         {
-            active = weapon.name == item.id ? true : false;
+            if(slot != null)
+                active = weapon.name == slot.item.id ? true : false;
+            else
+                active = false;
+            
             weapon.gameObject.SetActive(active);
 
             if(active) 

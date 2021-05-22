@@ -9,8 +9,8 @@ using UnityEngine.EventSystems;
 /// </summary>
 public class SlotButton : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, ISelectHandler
 {
-    [SerializeField]
-    private bool buildSlot;
+    public bool buildSlot;
+    
     private Slot slot;
     private Button itemButton;
     private Inventory inventory;
@@ -22,7 +22,7 @@ public class SlotButton : MonoBehaviour, IPointerEnterHandler, IPointerClickHand
     }
     
     /// <summary>
-    /// Select ItemButton on pointer enter 
+    /// Select ItemButton on pointer enter. 
     /// </summary>
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -30,36 +30,59 @@ public class SlotButton : MonoBehaviour, IPointerEnterHandler, IPointerClickHand
     }
 
     /// <summary>
-    /// Use Item on pointer click 
+    /// Use Item on pointer click.
     /// </summary>
     public void OnPointerClick(PointerEventData eventData)
     {
         if(slot != null)
         {
-            inventory.UseItem(slot);
-
-            if(buildSlot)
-            {
-                SetSlotObject(null);
-            }
+            if(slot.item != null)
+                inventory.UseItem(slot);
         }
     }
 
     /// <summary>
-    /// Refresh item details components on select
+    /// Refresh item details components on select.
     /// </summary>
     public void OnSelect(BaseEventData eventData)
     {
-        if(eventData.selectedObject == this.gameObject)
-            inventory.RefreshItemDetailComponents(slot);
+        if(slot != null)
+        {
+            if(eventData.selectedObject == this.gameObject && slot.item != null)
+                inventory.RefreshItemDetailComponents(slot);
+        }
     }
 
     /// <summary>
-    /// Set Slot object and refresh icon
+    /// Set <paramref name="slot"/> Slot object of SlotButton and refresh their icon.
     /// </summary>
+    /// <param name="slot">Slot to set in SlotButton.</param>
     public void SetSlotObject(Slot slot)
     {
         this.slot = slot;
-        transform.Find("Image").GetComponent<Image>().sprite = slot == null ? null : slot.item.icon;
+        Image icon = transform.Find("Image").GetComponent<Image>();
+
+        if(slot != null)
+        {
+            icon.enabled = true;    
+            icon.sprite = slot.item.icon;  
+        }
+        else
+        {
+            icon.enabled = false;    
+        }
+
+        
+    }
+
+    /// <summary>
+    /// Get Slot of object of SlotButton.
+    /// </summary>
+    /// <returns>
+    /// The Slot of the SlotButton.
+    /// </returns>
+    public Slot GetSlotObject()
+    {
+        return slot;
     }
 }

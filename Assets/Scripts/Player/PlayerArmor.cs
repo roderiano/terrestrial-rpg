@@ -1,49 +1,43 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// The main Player Armor class.
+/// Contains all methods to change the armor models.
+/// </summary>
 public class PlayerArmor : MonoBehaviour
 {   
-
     [SerializeField]
-    private Transform headArmors, chestArmors, LegsArmors;
+    private Transform headArmorsRoot, chestArmorsRoot, legsArmorsRoot;
 
-    public void SetHead(Item item)
+    /// <summary>
+    /// Enable only armor model of <paramref name="slot"/> item by <paramref name="type"/>.
+    /// </summary>
+    /// <param name="slot">Slot of armor to be equiped.</param>
+    /// <param name="type">ArmorType of armor to be equiped.</param>
+    public void EnableArmor(Slot slot, ArmorType type)
     {
-        // Active primary weapon
-        bool active;        
-        foreach (Transform armor in headArmors)
+        Transform armorsRoot;
+        switch(type)
         {
-            if(item != null)
-                active = armor.name == item.id ? true : false;
-            else
-                active = false;
-
-            armor.gameObject.SetActive(active);
+            case ArmorType.Head:
+                armorsRoot = headArmorsRoot;
+                break;
+            case ArmorType.Chest:
+                armorsRoot = chestArmorsRoot;
+                break;
+            case ArmorType.Legs:
+                armorsRoot = legsArmorsRoot;
+                break;
+            default:
+                armorsRoot = null;
+                break;
         }
-    }
-
-    public void SetChest(Item item)
-    {
-        // Active primary weapon
-        bool active;        
-        foreach (Transform armor in chestArmors)
+        
+        bool active;
+        foreach (Transform armor in armorsRoot)
         {
-            if(item != null)
-                active = armor.name == item.id ? true : false;
-            else
-                active = false;
-
-            armor.gameObject.SetActive(active);
-        }
-    }
-
-    public void SetLegs(Item item)
-    {
-        // Active primary weapon
-        bool active;        
-        foreach (Transform armor in LegsArmors)
-        {
-            if(item != null)
-                active = armor.name == item.id ? true : false;
+            if(slot != null)
+                active = armor.name == slot.item.id ? true : false;
             else
                 active = false;
 

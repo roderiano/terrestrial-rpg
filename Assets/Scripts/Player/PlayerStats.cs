@@ -2,73 +2,100 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Herdar posteriormente da classe Stats
+// ***********************Herdar posteriormente da classe Stats
+
+
+/// <summary>
+/// The main PlayerStats class.
+/// Contains all methods to handle player stats.
+/// </summary>
 public class PlayerStats : MonoBehaviour
 {   
-    //--> Getters and setters
-    private Item fireGun;
-    private Item headArmor, chestArmor, legsArmor;
+    private Slot fireGunSlot;
+    private Slot headArmorSlot, chestArmorSlot, legsArmorSlot;
 
-    private PlayerWeapons playerWeapons;
-    private PlayerArmor playerArmor;
 
-    void Start()
+    /// <summary>
+    /// Get FireGun Slot.
+    /// </summary>
+    /// <returns>
+    /// The equiped FireGun Slot.
+    /// </returns>
+    public Slot GetFireGunSlot() 
     {
-        playerWeapons = GetComponent<PlayerWeapons>();
-        playerArmor = GetComponent<PlayerArmor>();
+        return fireGunSlot;
     }
 
-    public Item GetFireGun() 
+    /// <summary>
+    /// Set FireGun Slot.
+    /// </summary>
+    /// <param name="slot">Slot of FireGun to be equiped.</param>
+    public void SetFireGunSlot(Slot slot) 
     {
-        return fireGun;
+        fireGunSlot = slot;
     }
 
-    public void SetFireGun(Item item) 
-    {
-        fireGun = item;
-        playerWeapons.SetFireGun(item);
-    }
 
-    public Item GetArmor(ArmorType type) 
+    /// <summary>
+    /// Get equiped armor Slot by <paramref name="type"/>.
+    /// </summary>
+    /// <param name="type">ArmorType of armor to get.</param>
+    /// <returns>
+    /// The equiped armor Slot by <paramref name="type"/>.
+    /// </returns>
+    public Slot GetArmorSlot(ArmorType type) 
     {
         switch (type)
         {
             case ArmorType.Head:
-                return headArmor;
+                return headArmorSlot;
             case ArmorType.Chest:
-                return chestArmor;
+                return chestArmorSlot;
             case ArmorType.Legs:
-                return legsArmor;
+                return legsArmorSlot;
             default:
                 return null;
         }
     }
 
-    public List<Item> GetArmorSet() 
+
+    /// <summary>
+    /// Set Armor Slot.
+    /// </summary>
+    /// <param name="item">Slot to be equiped.</param>
+    /// <param name="type">ArmorType of armor to be equiped.</param>
+    public void SetArmorSlot(Slot slot, ArmorType type) 
     {
-        List<Item> armorList = new List<Item>();
-        armorList.Add(headArmor);
-        armorList.Add(chestArmor);
-        armorList.Add(legsArmor);
+        switch (type)
+        {
+            case ArmorType.Head:
+                headArmorSlot = slot;
+                break;
+            case ArmorType.Chest:
+                chestArmorSlot = slot;
+                break;
+            case ArmorType.Legs:
+                legsArmorSlot = slot;
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Get armor set Slots.
+    /// </summary>
+    /// <returns>
+    /// The list of Slot`s equiped.
+    /// </returns>
+    public List<Slot> GetArmorSetSlots() 
+    {
+        List<Slot> armorList = new List<Slot>();
+        if(headArmorSlot != null)
+            armorList.Add(headArmorSlot);
+        if(chestArmorSlot != null)
+            armorList.Add(chestArmorSlot);
+        if(legsArmorSlot != null)
+            armorList.Add(legsArmorSlot);
 
         return armorList;
-    }
-
-    public void SetHead(Item item) 
-    {
-        headArmor = item;
-        playerArmor.SetHead(item);
-    }
-    
-    public void SetChest(Item item) 
-    {
-        chestArmor = item;
-        playerArmor.SetChest(item);
-    }
-
-    public void SetLegs(Item item) 
-    {
-        legsArmor = item;
-        playerArmor.SetLegs(item);
     }
 }

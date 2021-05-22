@@ -22,7 +22,7 @@ public class PlayerInput : MonoBehaviour
         horizontal = Input.GetAxis("Horizontal"); 
         vertical = Input.GetAxis("Vertical");
         mouseAxis = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-        isAiming = aimLock ? true : Input.GetMouseButton(1) && playerStats.GetFireGun();
+        isAiming = aimLock ? true : Input.GetMouseButton(1) && playerStats.GetFireGunSlot() != null;
     }
 
     public float GetHorizontal() 
