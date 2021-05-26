@@ -27,7 +27,7 @@ public class PlayerAim : MonoBehaviour
     {
         if(active)
         {
-            bool isAiming = Input.GetButton("Aim") && playerStats.GetFireGunSlot() != null;
+            bool isAiming = (Input.GetButton("Aim") || Input.GetAxis("Aim") != 0f) && playerStats.GetFireGunSlot() != null;
             float aimWeight = isAiming ? 1f : 0f;
 
             animator.SetBool("IsAiming", isAiming);

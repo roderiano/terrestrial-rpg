@@ -59,7 +59,7 @@ public class PlayerMovement : MonoBehaviour
             Vector3 direction = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
             Transform cameraTransform = Camera.main.transform;
             
-            direction = Input.GetButton("Aim") && playerStats.GetFireGunSlot() != null ? cameraTransform.forward : cameraTransform.TransformDirection(direction).normalized;
+            direction = (Input.GetButton("Aim") || Input.GetAxis("Aim") != 0f) && playerStats.GetFireGunSlot() != null ? cameraTransform.forward : cameraTransform.TransformDirection(direction).normalized;
             direction.y = 0f;
             
             if(direction != Vector3.zero)

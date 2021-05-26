@@ -6,7 +6,7 @@ using TMPro;
 
 /// <summary>
 /// The main Inventory class.
-/// Contains all methods for handle inventory.
+/// Contains all methods for handle inventory data and UI.
 /// </summary>
 public class Inventory : MonoBehaviour
 {

@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 /// The SlotButton class.
 /// Contains all methods for get user event.
 /// </summary>
-public class SlotButton : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, ISelectHandler
+public class SlotButton : MonoBehaviour, IPointerEnterHandler, ISelectHandler
 {
     public bool buildSlot;
     
@@ -30,9 +30,9 @@ public class SlotButton : MonoBehaviour, IPointerEnterHandler, IPointerClickHand
     }
 
     /// <summary>
-    /// Use Item on pointer click.
+    /// Interact with Slot.
     /// </summary>
-    public void OnPointerClick(PointerEventData eventData)
+    public void Interact()
     {
         if(slot != null)
         {
