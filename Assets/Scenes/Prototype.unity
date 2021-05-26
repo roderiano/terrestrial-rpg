@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.42487592, g: 0.31173727, b: 0.32673335, a: 1}
+  m_IndirectSpecularColor: {r: 0.42487592, g: 0.31174108, b: 0.32891965, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -8075,7 +8075,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3357646908816352646}
-  m_LocalRotation: {x: 0.048956554, y: 0.115251064, z: -0.0056871492, w: 0.992113}
+  m_LocalRotation: {x: 0.048956517, y: 0.115251064, z: -0.0056871455, w: 0.992113}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -9793,7 +9793,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8113481449018208816}
-  m_LocalRotation: {x: 0.048956573, y: 0.11525107, z: -0.0056871525, w: 0.992113}
+  m_LocalRotation: {x: 0.048956502, y: 0.11525107, z: -0.0056871437, w: 0.992113}
   m_LocalPosition: {x: 0, y: 8, z: -20}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -10027,19 +10027,6 @@ Transform:
   m_Father: {fileID: 8731042992531182161}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8599869619308012784
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8960344346496974300}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15302257d934e5f4bbd6d26e359106f2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  aimLock: 0
 --- !u!114 &8681522209186854370
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10208,7 +10195,6 @@ GameObject:
   - component: {fileID: 3144933785428527221}
   - component: {fileID: 7985150772032012613}
   - component: {fileID: 8681522209186854370}
-  - component: {fileID: 8599869619308012784}
   - component: {fileID: 3257086652918553252}
   - component: {fileID: 7985150772032012609}
   - component: {fileID: 433137270728731652}

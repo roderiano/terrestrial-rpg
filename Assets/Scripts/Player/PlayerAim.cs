@@ -12,25 +12,35 @@ public class PlayerAim : MonoBehaviour
     [SerializeField]
     private Transform weapons; 
 
+    private bool active;
     private Animator animator;
-    private PlayerInput playerInput;
     private PlayerStats playerStats;
 
     void Start()
     {
+        active = true;
         animator = GetComponent<Animator>();
-        playerInput = GetComponent<PlayerInput>();
+        playerStats = GetComponent<PlayerStats>();
     }
 
     public void Aim()
     {
-        bool isAiming = playerInput.IsAiming();
-        float aimWeight = isAiming ? 1f : 0f;
+        if(active)
+        {
+            bool isAiming = Input.GetButton("Aim") && playerStats.GetFireGunSlot() != null;
+            float aimWeight = isAiming ? 1f : 0f;
 
-        animator.SetBool("IsAiming", isAiming);
+            animator.SetBool("IsAiming", isAiming);
 
-        bodyAimLayer.weight = aimWeight;
-        handAimLayer.weight = aimWeight;
-        weapons.gameObject.SetActive(isAiming);
+            bodyAimLayer.weight = aimWeight;
+            handAimLayer.weight = aimWeight;
+            weapons.gameObject.SetActive(isAiming);
+        }
+    }
+
+    public void SetActive(bool value) 
+    {
+        active = value;
+        Object.FindObjectOfType<CinemachineFreeLook>().enabled = value;
     }
 }

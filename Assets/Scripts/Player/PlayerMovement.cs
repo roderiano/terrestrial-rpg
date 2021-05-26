@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Cinemachine;
 
 public class PlayerMovement : MonoBehaviour 
 {
@@ -10,19 +11,23 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private LayerMask groundMask;
     
+    private float pausingSpeed;
+    private bool active;
     private Animator animator;
-    private PlayerInput playerInput;
     private Quaternion chestRotation;
     private Transform groundCheckPoint;
     private Transform chestBoneTransform;
     private CharacterController characterController;
+    private PlayerStats playerStats;
+    
 
 
     //--> MonoBehaviour methods
     void Awake() 
     {
+        active = true;
         animator = GetComponent<Animator>();
-        playerInput =  GetComponent<PlayerInput>();
+        playerStats = GetComponent<PlayerStats>();
         characterController = GetComponent<CharacterController>();
         groundCheckPoint = transform.Find("GroundCheckPoint");
         chestBoneTransform = animator.GetBoneTransform(HumanBodyBones.Chest);
@@ -38,7 +43,7 @@ public class PlayerMovement : MonoBehaviour
 
 
     //--> Public methods
-    public void Move() 
+    public void Movement() 
     {
         SetRotation();
         ApplyGravity();
@@ -49,15 +54,17 @@ public class PlayerMovement : MonoBehaviour
     //--> Private methods
     private void SetRotation() 
     {
-        Vector3 direction = new Vector3(playerInput.GetHorizontal(), 0f, playerInput.GetVertical());
-        Transform cameraTransform = Camera.main.transform;
-        
-        direction = playerInput.IsAiming() ? cameraTransform.forward : cameraTransform.TransformDirection(direction).normalized;
-        direction.y = 0f;
-        
-        if(direction != Vector3.zero)
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), 10f * Time.deltaTime); 
-
+        if(active)
+        {
+            Vector3 direction = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
+            Transform cameraTransform = Camera.main.transform;
+            
+            direction = Input.GetButton("Aim") && playerStats.GetFireGunSlot() != null ? cameraTransform.forward : cameraTransform.TransformDirection(direction).normalized;
+            direction.y = 0f;
+            
+            if(direction != Vector3.zero)
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), 10f * Time.deltaTime); 
+        }
     }
 
     private void ApplyGravity()  {
@@ -75,11 +82,21 @@ public class PlayerMovement : MonoBehaviour
 
     private void SetAnimatorParams() 
     {
-        float speed = playerInput.GetHorizontal() * playerInput.GetHorizontal() + playerInput.GetVertical() * playerInput.GetVertical();
+        float speed;
+
+        if(active)
+        {
+            speed = Input.GetAxis("Horizontal") * Input.GetAxis("Horizontal") + Input.GetAxis("Vertical") * Input.GetAxis("Vertical");
+        } 
+        else
+        {
+            pausingSpeed = Mathf.Lerp(pausingSpeed, 0, Time.deltaTime * 10);
+            speed = pausingSpeed;
+        }  
         
         animator.SetFloat("Speed", speed);
-        animator.SetFloat("Vertical", playerInput.GetVertical());
-        animator.SetFloat("Horizontal", playerInput.GetHorizontal());
+        animator.SetFloat("Vertical", Input.GetAxis("Vertical"));
+        animator.SetFloat("Horizontal", Input.GetAxis("Horizontal")); 
     }
 
     private bool IsGrounded() 
@@ -94,5 +111,13 @@ public class PlayerMovement : MonoBehaviour
         }
         
         return false;
+    }
+
+    public void SetActive(bool value) 
+    {
+        active = value;
+        
+        if(!active)
+            pausingSpeed = Input.GetAxis("Horizontal") * Input.GetAxis("Horizontal") + Input.GetAxis("Vertical") * Input.GetAxis("Vertical");
     }
 }

@@ -21,30 +21,28 @@ public class Inventory : MonoBehaviour
     private PlayerStats stats;
     private PlayerArmor armor;
     private PlayerWeapons weapons;
-    private PlayerInput input;
-    private PlayerInstanceHandler instanceHandler;
+    private PlayerMovement movement;
+    private PlayerAim aim;
     private List<Slot> slots = new List<Slot>();
-    private bool inventoryEnabled = false;
 
     void Start()
     {
         stats = GetComponent<PlayerStats>();
         armor = GetComponent<PlayerArmor>();
         weapons = GetComponent<PlayerWeapons>();
-        input = GetComponent<PlayerInput>();
-        instanceHandler = GetComponent<PlayerInstanceHandler>();
+        movement = GetComponent<PlayerMovement>();
+        aim = GetComponent<PlayerAim>();
     }
 
     void Update()
     {
         // Enable and disable inventory UI.
-        if(input.Inventory())
+        if(Input.GetButtonDown("Inventory"))
         {
-            inventoryEnabled = !inventoryEnabled;
-            instanceHandler.canMove = !inventoryEnabled;
-            inventoryCanvas.gameObject.SetActive(inventoryEnabled);
+            aim.SetActive(inventoryCanvas.gameObject.activeInHierarchy);
+            movement.SetActive(inventoryCanvas.gameObject.activeInHierarchy);
+            inventoryCanvas.gameObject.SetActive(!inventoryCanvas.gameObject.activeInHierarchy);
         }
-        
     }
 
     /// <summary>
