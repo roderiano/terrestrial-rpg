@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 
 /// <summary>
@@ -14,7 +15,7 @@ public class Inventory : MonoBehaviour
     [SerializeField]
     private Transform inventoryCanvas;
     [SerializeField]
-    private GameObject slotButton;
+    private GameObject slotButton, actionButton;
     [SerializeField]
     private SlotButton chestSlotBuild, legsSlotBuild, fireGunSlotBuild;
 
@@ -42,6 +43,7 @@ public class Inventory : MonoBehaviour
             aim.SetActive(inventoryCanvas.gameObject.activeInHierarchy);
             movement.SetActive(inventoryCanvas.gameObject.activeInHierarchy);
             inventoryCanvas.gameObject.SetActive(!inventoryCanvas.gameObject.activeInHierarchy);
+            RefreshSlotButtons();
         }
     }
 
@@ -67,8 +69,6 @@ public class Inventory : MonoBehaviour
         {
             slots.Add(new Slot(item, 1));
         } 
-
-        RefreshSlotButtons();
     }
 
     /// <summary>
@@ -85,39 +85,85 @@ public class Inventory : MonoBehaviour
         foreach (Transform slot in slotsContent)
             GameObject.Destroy(slot.gameObject);
 
-        foreach(Slot slot in slots)
+        EventSystem.current.SetSelectedGameObject(null);
+        if(slots.Count > 0)
         {
-            bool canInstantiate = true;
-            if(stats.GetArmorSetSlots().Contains(slot))
-                canInstantiate = false;
-
-            if(stats.GetFireGunSlot() == slot)
-                canInstantiate = false;
-
-            if(canInstantiate)
+            foreach(Slot slot in slots)
             {
-                GameObject slotInstance = Instantiate(slotButton, Vector3.zero, Quaternion.identity, slotsContent);
-                slotInstance.GetComponent<SlotButton>().SetSlotObject(slot);  
-            }
-            else
-            {
-                if(slot.item.category == ItemCategory.Armor)
+                bool canInstantiate = true;
+                if(stats.GetArmorSetSlots().Contains(slot))
+                    canInstantiate = false;
+
+                if(stats.GetFireGunSlot() == slot)
+                    canInstantiate = false;
+
+                if(canInstantiate)
                 {
-
-                    switch(((Armor)slot.item).armorType)
+                    GameObject slotInstance = Instantiate(slotButton, Vector3.zero, Quaternion.identity, slotsContent);
+                    SlotButton button = slotInstance.GetComponent<SlotButton>();
+                    button.SetSlotObject(slot);
+                    
+                    if(EventSystem.current.currentSelectedGameObject == null)
+                        button.Select();
+                }
+                else
+                {
+                    if(slot.item.category == ItemCategory.Armor)
                     {
-                        case ArmorType.Chest:
-                            chestSlotBuild.SetSlotObject(slot);
-                            break;
-                        case ArmorType.Legs:
-                            legsSlotBuild.SetSlotObject(slot);
-                            break;
+
+                        switch(((Armor)slot.item).armorType)
+                        {
+                            case ArmorType.Chest:
+                                chestSlotBuild.SetSlotObject(slot);
+                                break;
+                            case ArmorType.Legs:
+                                legsSlotBuild.SetSlotObject(slot);
+                                break;
+                        }
+                    }
+                    else if(slot.item.category == ItemCategory.FireGun)
+                    {
+                        fireGunSlotBuild.SetSlotObject(slot);
                     }
                 }
-                else if(slot.item.category == ItemCategory.FireGun)
-                {
-                    fireGunSlotBuild.SetSlotObject(slot);
-                }
+            }
+        }
+        else
+        {
+            fireGunSlotBuild.Select();
+        }
+    }
+
+    /// <summary>
+    /// Delete all UI ActionButton`s and instantiate the new action by <paramref name="slot"/> Item.
+    /// </summary>
+    /// <param name="slot">Slot reference to instantiate ActionButton`s.</param>
+    public void RefreshActionButtons(Slot slot) 
+    {
+        GameObject action;
+        Transform actions = inventoryCanvas.Find("Actions");    
+
+        foreach (Transform _action in actions)
+            GameObject.Destroy(_action.gameObject);
+
+        // Instantiate default actions
+        action = Instantiate(actionButton, Vector3.zero, Quaternion.identity, actions);
+        action.transform.GetComponent<ActionButton>().SetAction(MenuAction.Back);
+
+        // Instantiate custom actions
+        if(slot != null && slot.item != null)
+        {
+            switch (slot.item.category)
+            {
+                case ItemCategory.Armor:
+                case ItemCategory.FireGun:
+                    action = Instantiate(actionButton, Vector3.zero, Quaternion.identity, actions);
+
+                    if(stats.GetFireGunSlot() != slot && !stats.GetArmorSetSlots().Contains(slot))
+                        action.transform.GetComponent<ActionButton>().SetAction(MenuAction.Equip);
+                    else
+                        action.transform.GetComponent<ActionButton>().SetAction(MenuAction.Unequip);
+                    break;
             }
         }
     }
@@ -143,7 +189,7 @@ public class Inventory : MonoBehaviour
     /// <param name="slot">Slot reference to use.</param>
     public void UseItem(Slot slot) 
     {
-        Slot slotReference;
+        Slot slotReference = null;
         switch (slot.item.category)
         {  
             case ItemCategory.FireGun:
@@ -160,6 +206,7 @@ public class Inventory : MonoBehaviour
         }
 
         RefreshSlotButtons();
+        RefreshActionButtons(slotReference);
     }
 
     /// <summary>
