@@ -18,6 +18,11 @@ public class Inventory : MonoBehaviour
     private GameObject slotButton, actionButton;
     [SerializeField]
     private SlotButton chestSlotBuild, legsSlotBuild, fireGunSlotBuild;
+    
+    [Header("Gameplay")]
+    [SerializeField]
+    private GameObject itemDrop;
+    
 
     private PlayerStats stats;
     private PlayerArmor armor;
@@ -25,6 +30,7 @@ public class Inventory : MonoBehaviour
     private PlayerMovement movement;
     private PlayerAim aim;
     private List<Slot> slots = new List<Slot>();
+    private Slot selectedSlot = null;
 
     void Start()
     {
@@ -43,6 +49,25 @@ public class Inventory : MonoBehaviour
             aim.SetActive(inventoryCanvas.gameObject.activeInHierarchy);
             movement.SetActive(inventoryCanvas.gameObject.activeInHierarchy);
             inventoryCanvas.gameObject.SetActive(!inventoryCanvas.gameObject.activeInHierarchy);
+            RefreshSlotButtons();
+        }
+        else if(Input.GetButtonDown("Drop") && inventoryCanvas.gameObject.activeInHierarchy)
+        {
+            DropItem();
+        }
+    }
+
+    /// <summary>
+    /// Drop selected slot in UI.
+    /// </summary>
+    public void DropItem() 
+    {   
+        if(!stats.GetArmorSetSlots().Contains(selectedSlot) && stats.GetFireGunSlot() != selectedSlot)
+        {
+            GameObject drop = Instantiate(itemDrop, transform.position, transform.rotation);
+            drop.GetComponent<ItemDrop>().item = selectedSlot.item;
+
+            slots.Remove(selectedSlot);
             RefreshSlotButtons();
         }
     }
@@ -67,7 +92,7 @@ public class Inventory : MonoBehaviour
         }
         else
         {
-            slots.Add(new Slot(item, 1));
+            slots.Add(new Slot(item, amount));
         } 
     }
 
@@ -138,7 +163,7 @@ public class Inventory : MonoBehaviour
     /// Delete all UI ActionButton`s and instantiate the new action by <paramref name="slot"/> Item.
     /// </summary>
     /// <param name="slot">Slot reference to instantiate ActionButton`s.</param>
-    public void RefreshActionButtons(Slot slot) 
+    public void RefreshActionButtons() 
     {
         GameObject action;
         Transform actions = inventoryCanvas.Find("Actions");    
@@ -146,26 +171,36 @@ public class Inventory : MonoBehaviour
         foreach (Transform _action in actions)
             GameObject.Destroy(_action.gameObject);
 
-        // Instantiate default actions
-        action = Instantiate(actionButton, Vector3.zero, Quaternion.identity, actions);
-        action.transform.GetComponent<ActionButton>().SetAction(MenuAction.Back);
 
         // Instantiate custom actions
-        if(slot != null && slot.item != null)
+        if(selectedSlot != null && selectedSlot.item != null)
         {
-            switch (slot.item.category)
+            switch (selectedSlot.item.category)
             {
                 case ItemCategory.Armor:
                 case ItemCategory.FireGun:
+                    // Equip / Unequip
                     action = Instantiate(actionButton, Vector3.zero, Quaternion.identity, actions);
-
-                    if(stats.GetFireGunSlot() != slot && !stats.GetArmorSetSlots().Contains(slot))
+                    if(stats.GetFireGunSlot() != selectedSlot && !stats.GetArmorSetSlots().Contains(selectedSlot))
+                    {
                         action.transform.GetComponent<ActionButton>().SetAction(MenuAction.Equip);
+
+                        // Drop
+                        action = Instantiate(actionButton, Vector3.zero, Quaternion.identity, actions);
+                        action.transform.GetComponent<ActionButton>().SetAction(MenuAction.Drop);
+                    }
                     else
+                    {
                         action.transform.GetComponent<ActionButton>().SetAction(MenuAction.Unequip);
+                    }   
+
                     break;
             }
         }
+
+        // Instantiate default actions
+        action = Instantiate(actionButton, Vector3.zero, Quaternion.identity, actions);
+        action.transform.GetComponent<ActionButton>().SetAction(MenuAction.Back);
     }
 
     /// <summary>
@@ -206,18 +241,27 @@ public class Inventory : MonoBehaviour
         }
 
         RefreshSlotButtons();
-        RefreshActionButtons(slotReference);
+    }
+
+    /// <summary>
+    /// Set selected <paramref name="slot"/> in Inventory UI.
+    /// </summary>
+    /// <param name="slot">Slot reference to set.</param>
+    public void SetSelectedSlot(Slot slot) 
+    {
+        selectedSlot = slot;
     }
 
     /// <summary>
     /// Get Item when collider with ItemDrop component.
     /// </summary>
-    public void OnTriggerEnter(Collider collider) 
+    public void OnTriggerStay(Collider collider) 
     {
-        ItemDrop dropItem = collider.gameObject.GetComponent<ItemDrop>();
-        if(dropItem)
+        ItemDrop itemDrop = collider.gameObject.GetComponent<ItemDrop>();
+        Debug.Log(Input.GetButtonDown("Get"));
+        if(itemDrop && Input.GetButtonDown("Get"))
         {
-            AddItem(dropItem.item, 1);
+            AddItem(itemDrop.item, 1);
             Destroy(collider.gameObject);
         }
     }

@@ -14,7 +14,6 @@ public class SlotButton : MonoBehaviour, IPointerEnterHandler, ISelectHandler
     private Slot slot;
     private Inventory inventory;
 
-
     void Awake()
     {
         inventory = Object.FindObjectOfType<Inventory>();
@@ -25,7 +24,7 @@ public class SlotButton : MonoBehaviour, IPointerEnterHandler, ISelectHandler
     /// </summary>
     public void OnPointerEnter(PointerEventData eventData)
     {
-        GetComponent<Button>().Select();
+        Select();
     }
 
     /// <summary>
@@ -33,7 +32,10 @@ public class SlotButton : MonoBehaviour, IPointerEnterHandler, ISelectHandler
     /// </summary>
     public void Select()
     {
-        GetComponent<Button>().Select();
+        if(inventory != null)
+        {
+            GetComponent<Button>().Select();
+        }
     }
 
     /// <summary>
@@ -53,13 +55,9 @@ public class SlotButton : MonoBehaviour, IPointerEnterHandler, ISelectHandler
     /// </summary>
     public void OnSelect(BaseEventData eventData)
     {
-        if(slot != null)
-        {
-            if(eventData.selectedObject == this.gameObject && slot.item != null)
-                inventory.RefreshItemDetailComponents(slot);
-        }
-
-        inventory.RefreshActionButtons(slot);
+        inventory.SetSelectedSlot(slot);
+        inventory.RefreshItemDetailComponents(slot);
+        inventory.RefreshActionButtons();
     }
 
     /// <summary>

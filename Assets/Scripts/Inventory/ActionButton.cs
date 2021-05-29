@@ -42,6 +42,9 @@ public class ActionButton : MonoBehaviour
             case(MenuAction.Back):
                 text.SetText("Back");
                 break;
+            case(MenuAction.Drop):
+                text.SetText("Drop");
+                break;
         }
     }
 }
