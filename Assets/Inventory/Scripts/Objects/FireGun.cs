@@ -9,7 +9,7 @@ public enum FireMode {
 [CreateAssetMenu(fileName="New Primary Weapon Object", menuName="Inventory/Weapons/Primary Weapon")]
 public class FireGun : Weapon
 {
-    [Header("Primary Weapon Configuration")]
+    [Header("Configuration")]
     public FireMode fireMode;
 
     public void Awake()

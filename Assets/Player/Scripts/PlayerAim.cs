@@ -10,31 +10,31 @@ public class PlayerAim : MonoBehaviour
     [SerializeField]
     private Rig bodyAimLayer, handAimLayer;
     [SerializeField]
-    private Transform weapons; 
+    private Transform weaponsRoot; 
 
     private bool active;
     private Animator animator;
-    private PlayerStats playerStats;
+    private PlayerWeapons weapons;
 
     void Start()
     {
         active = true;
         animator = GetComponent<Animator>();
-        playerStats = GetComponent<PlayerStats>();
+        weapons = GetComponent<PlayerWeapons>();
     }
 
     public void Aim()
     {
         if(active)
         {
-            bool isAiming = (Input.GetButton("Aim") || Input.GetAxis("Aim") != 0f) && playerStats.GetFireGunSlot() != null;
+            bool isAiming = (Input.GetButton("Aim") || Input.GetAxis("Aim") != 0f) && weapons.GetFireGunSlot() != null;
             float aimWeight = isAiming ? 1f : 0f;
 
             animator.SetBool("IsAiming", isAiming);
 
             bodyAimLayer.weight = aimWeight;
             handAimLayer.weight = aimWeight;
-            weapons.gameObject.SetActive(isAiming);
+            weaponsRoot.gameObject.SetActive(isAiming);
         }
     }
 

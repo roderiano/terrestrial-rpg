@@ -9,11 +9,11 @@ public enum ArmorType {
 [CreateAssetMenu(fileName="New Armor Object", menuName="Inventory/Armor")]
 public class Armor : Item
 {
-    [Header("Armor Info")]
+    [Header("Configuration")]
     public ArmorType armorType;
     
-    [Header("Resistence Attributes")]
-    public float physicalResistence;
+    [Header("Resistance")]
+    public float physical, frost, fire, magical, decay;
 
     public void Awake()
     {

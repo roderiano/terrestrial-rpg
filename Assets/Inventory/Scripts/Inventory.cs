@@ -24,7 +24,6 @@ public class Inventory : MonoBehaviour
     private GameObject itemDrop;
     
 
-    private PlayerStats stats;
     private PlayerArmor armor;
     private PlayerWeapons weapons;
     private PlayerMovement movement;
@@ -34,7 +33,6 @@ public class Inventory : MonoBehaviour
 
     void Start()
     {
-        stats = GetComponent<PlayerStats>();
         armor = GetComponent<PlayerArmor>();
         weapons = GetComponent<PlayerWeapons>();
         movement = GetComponent<PlayerMovement>();
@@ -62,7 +60,7 @@ public class Inventory : MonoBehaviour
     /// </summary>
     public void DropItem() 
     {   
-        if(!stats.GetArmorSetSlots().Contains(selectedSlot) && stats.GetFireGunSlot() != selectedSlot)
+        if(!armor.GetArmorSetSlots().Contains(selectedSlot) && weapons.GetFireGunSlot() != selectedSlot)
         {
             GameObject drop = Instantiate(itemDrop, transform.position, transform.rotation);
             drop.GetComponent<ItemDrop>().item = selectedSlot.item;
@@ -116,10 +114,10 @@ public class Inventory : MonoBehaviour
             foreach(Slot slot in slots)
             {
                 bool canInstantiate = true;
-                if(stats.GetArmorSetSlots().Contains(slot))
+                if(armor.GetArmorSetSlots().Contains(slot))
                     canInstantiate = false;
 
-                if(stats.GetFireGunSlot() == slot)
+                if(weapons.GetFireGunSlot() == slot)
                     canInstantiate = false;
 
                 if(canInstantiate)
@@ -181,7 +179,7 @@ public class Inventory : MonoBehaviour
                 case ItemCategory.FireGun:
                     // Equip / Unequip
                     action = Instantiate(actionButton, Vector3.zero, Quaternion.identity, actions);
-                    if(stats.GetFireGunSlot() != selectedSlot && !stats.GetArmorSetSlots().Contains(selectedSlot))
+                    if(weapons.GetFireGunSlot() != selectedSlot && !armor.GetArmorSetSlots().Contains(selectedSlot))
                     {
                         action.transform.GetComponent<ActionButton>().SetAction(MenuAction.Equip);
 
@@ -228,15 +226,13 @@ public class Inventory : MonoBehaviour
         switch (slot.item.category)
         {  
             case ItemCategory.FireGun:
-                slotReference = stats.GetFireGunSlot() == slot ? null : slot;
-                stats.SetFireGunSlot(slotReference);
-                weapons.EnableFireGun(slotReference);
+                slotReference = weapons.GetFireGunSlot() == slot ? null : slot;
+                weapons.SetFireGunSlot(slotReference);
                 break;
 
             case ItemCategory.Armor:
-                slotReference = stats.GetArmorSetSlots().Contains(slot) ? null : slot;
-                stats.SetArmorSlot(slotReference, ((Armor)slot.item).armorType);
-                armor.EnableArmor(slotReference, ((Armor)slot.item).armorType);
+                slotReference = armor.GetArmorSetSlots().Contains(slot) ? null : slot;
+                armor.SetArmorSlot(slotReference, ((Armor)slot.item).armorType);
                 break;
         }
 
@@ -258,7 +254,7 @@ public class Inventory : MonoBehaviour
     public void OnTriggerStay(Collider collider) 
     {
         ItemDrop itemDrop = collider.gameObject.GetComponent<ItemDrop>();
-        Debug.Log(Input.GetButtonDown("Get"));
+        
         if(itemDrop && Input.GetButtonDown("Get"))
         {
             AddItem(itemDrop.item, 1);

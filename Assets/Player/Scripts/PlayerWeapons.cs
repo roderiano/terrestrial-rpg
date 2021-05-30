@@ -9,6 +9,7 @@ public class PlayerWeapons : MonoBehaviour
     private TwoBoneIKConstraint leftArmIK, rightArmIK; 
 
     private Transform refLeftHand, refRightHand;
+    private Slot fireGunSlot;
 
     void Update()
     {
@@ -21,7 +22,7 @@ public class PlayerWeapons : MonoBehaviour
         }
     }
     
-    public void EnableFireGun(Slot slot)
+    private void EnableFireGun(Slot slot)
     {
         // Set FireGun
         bool active;        
@@ -40,5 +41,26 @@ public class PlayerWeapons : MonoBehaviour
                 refRightHand = weapon.Find("RefRightHand");
             }
         }
+    }
+
+    /// <summary>
+    /// Get FireGun Slot.
+    /// </summary>
+    /// <returns>
+    /// The equiped FireGun Slot.
+    /// </returns>
+    public Slot GetFireGunSlot() 
+    {
+        return fireGunSlot;
+    }
+
+    /// <summary>
+    /// Set FireGun Slot.
+    /// </summary>
+    /// <param name="slot">Slot of FireGun to be equiped.</param>
+    public void SetFireGunSlot(Slot slot) 
+    {
+        fireGunSlot = slot;
+        EnableFireGun(slot);
     }
 }
