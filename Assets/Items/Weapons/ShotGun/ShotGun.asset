@@ -17,5 +17,9 @@ MonoBehaviour:
   weight: 1
   icon: {fileID: 21300000, guid: 014b338a800ffc64d8886f457d50fcaa, type: 3}
   category: 0
-  physicalDamage: 0
+  physical: 80
+  frost: 0
+  fire: 2
+  magical: 0
+  decay: 1
   fireMode: 0

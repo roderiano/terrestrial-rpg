@@ -88,4 +88,42 @@ public class PlayerArmor : MonoBehaviour
         
         EnableArmor(slot, type);
     }
+
+    /// <summary>
+    /// Get armor set resistances.
+    /// </summary>
+    /// <returns>
+    /// The dictionary of armor set resistance.
+    /// </returns>
+    public Dictionary<string, float> GetArmorSetResistance() 
+    {
+        List<Slot> armorSet = GetArmorSetSlots();
+        string[] resistanceKeys = {"physical", "frost", "fire", "magical", "decay"};
+        Dictionary<string, float> resistanceDictionary = new Dictionary<string, float>();
+
+        foreach (string key in resistanceKeys)
+        {
+            bool keyCreated = false;
+
+            foreach (Slot slot in armorSet)
+            {
+                float value = (float)slot.item.GetType().GetField(key).GetValue(slot.item); 
+                
+                if(resistanceDictionary.ContainsKey(key))
+                {
+                    resistanceDictionary[key] += value;   
+                }
+                else
+                {
+                    resistanceDictionary.Add(key, value);
+                    keyCreated = true;
+                }
+            }
+
+            if(!keyCreated)
+                resistanceDictionary.Add(key, 0f);
+        }
+
+        return resistanceDictionary;
+    }
 }

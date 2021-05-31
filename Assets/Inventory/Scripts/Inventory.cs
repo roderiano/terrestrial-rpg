@@ -11,13 +11,19 @@ using TMPro;
 /// </summary>
 public class Inventory : MonoBehaviour
 {
-    [Header("User Interface")]
+    [Header("Inventory Interface")]
     [SerializeField]
     private Transform inventoryCanvas;
     [SerializeField]
     private GameObject slotButton, actionButton;
     [SerializeField]
     private SlotButton chestSlotBuild, legsSlotBuild, fireGunSlotBuild;
+    
+    [Header("Stats Interface")]
+    [SerializeField]
+    private Transform armorStatsSection;
+    [SerializeField]
+    private Transform fireGunStatsSection;
     
     [Header("Gameplay")]
     [SerializeField]
@@ -237,6 +243,31 @@ public class Inventory : MonoBehaviour
         }
 
         RefreshSlotButtons();
+        RefreshStatsTexts();
+    }
+
+    /// <summary>
+    /// Refresh stats text's in UI.
+    /// </summary>
+    private void RefreshStatsTexts() 
+    {
+        Dictionary<string, float> armorResistence = armor.GetArmorSetResistance();
+        foreach(var resistence in armorResistence)
+        {
+            float value = armorResistence.ContainsKey(resistence.Key) ? armorResistence[resistence.Key] : 0f;
+            string resistenceFieldPath = char.ToUpper(resistence.Key[0]) + resistence.Key.Substring(1) + "/Value";
+
+            armorStatsSection.Find(resistenceFieldPath).GetComponent<TextMeshProUGUI>().SetText(value.ToString());
+        }
+
+        Dictionary<string, float> fireGunDamage = weapons.GetFireGunDamage();
+        foreach(var damage in fireGunDamage)
+        {
+            float value = fireGunDamage.ContainsKey(damage.Key) ? fireGunDamage[damage.Key] : 0f;
+            string damageFieldPath = char.ToUpper(damage.Key[0]) + damage.Key.Substring(1) + "/Value";
+
+            fireGunStatsSection.Find(damageFieldPath).GetComponent<TextMeshProUGUI>().SetText(value.ToString());
+        }
     }
 
     /// <summary>

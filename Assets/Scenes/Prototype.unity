@@ -12559,6 +12559,8 @@ MonoBehaviour:
   chestSlotBuild: {fileID: 1734622861}
   legsSlotBuild: {fileID: 686287485}
   fireGunSlotBuild: {fileID: 5196656934768005447}
+  armorStatsSection: {fileID: 1405175709}
+  fireGunStatsSection: {fileID: 2064025462}
   itemDrop: {fileID: 2597605455364654489, guid: 627ab4c0226d0cd459aee32bfa8538d9,
     type: 3}
 --- !u!1 &592976683312417782
@@ -14442,7 +14444,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3357646908816352646}
-  m_LocalRotation: {x: 0.048956554, y: 0.115251064, z: -0.0056871492, w: 0.992113}
+  m_LocalRotation: {x: 0.048956517, y: 0.115251064, z: -0.0056871455, w: 0.992113}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -16148,7 +16150,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8113481449018208816}
-  m_LocalRotation: {x: 0.048956573, y: 0.11525107, z: -0.0056871525, w: 0.992113}
+  m_LocalRotation: {x: 0.048956502, y: 0.11525107, z: -0.0056871437, w: 0.992113}
   m_LocalPosition: {x: 0, y: 8, z: -20}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:

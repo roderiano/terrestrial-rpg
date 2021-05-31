@@ -13,7 +13,8 @@ public class Armor : Item
     public ArmorType armorType;
     
     [Header("Resistance")]
-    public float physical, frost, fire, magical, decay;
+    public float physical;
+    public float frost, fire, magical, decay;
 
     public void Awake()
     {

@@ -3,5 +3,6 @@
 public class Weapon : Item
 {
     [Header("Damage")]
-    public float physical, frost, fire, magical, decay;
+    public float physical;
+    public float frost, fire, magical, decay;
 }

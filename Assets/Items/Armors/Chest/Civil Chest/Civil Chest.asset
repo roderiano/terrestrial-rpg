@@ -18,4 +18,8 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: cb01ae911ffe01a45a816f942f955ce6, type: 3}
   category: 2
   armorType: 1
-  physicalResistence: 2
+  physical: 3
+  frost: 5
+  fire: 7
+  magical: 9
+  decay: 12

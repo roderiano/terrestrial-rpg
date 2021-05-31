@@ -1,4 +1,5 @@
 ﻿using UnityEngine.Animations.Rigging;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerWeapons : MonoBehaviour
@@ -62,5 +63,24 @@ public class PlayerWeapons : MonoBehaviour
     {
         fireGunSlot = slot;
         EnableFireGun(slot);
+    }
+
+    /// <summary>
+    /// Get FireGun damage.
+    /// </summary>
+    /// <returns>
+    /// The dictionary of FireGun damage.
+    /// </returns>
+    public Dictionary<string, float> GetFireGunDamage() 
+    {
+        string[] resistanceKeys = {"physical", "frost", "fire", "magical", "decay"};
+        Dictionary<string, float> damageDictionary = new Dictionary<string, float>();
+
+        foreach (string key in resistanceKeys)
+        {
+            damageDictionary.Add(key, (float)fireGunSlot.item.GetType().GetField(key).GetValue(fireGunSlot.item));
+        }
+
+        return damageDictionary;
     }
 }
