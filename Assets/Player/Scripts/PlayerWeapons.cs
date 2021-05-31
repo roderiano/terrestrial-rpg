@@ -78,7 +78,8 @@ public class PlayerWeapons : MonoBehaviour
 
         foreach (string key in resistanceKeys)
         {
-            damageDictionary.Add(key, (float)fireGunSlot.item.GetType().GetField(key).GetValue(fireGunSlot.item));
+            float value = fireGunSlot != null ? (float)fireGunSlot.item.GetType().GetField(key).GetValue(fireGunSlot.item) : 0f;
+            damageDictionary.Add(key, value);
         }
 
         return damageDictionary;
