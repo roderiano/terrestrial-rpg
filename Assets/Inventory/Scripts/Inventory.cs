@@ -250,6 +250,7 @@ public class Inventory : MonoBehaviour
     /// </summary>
     private void RefreshStatsTexts() 
     {
+        // Armor
         Dictionary<string, float> armorResistence = armor.GetArmorSetResistance();
         foreach(var resistence in armorResistence)
         {
@@ -257,6 +258,7 @@ public class Inventory : MonoBehaviour
             armorStatsSection.Find(resistenceFieldPath).GetComponent<TextMeshProUGUI>().SetText(resistence.Value.ToString());
         }
 
+        // FireGun
         Dictionary<string, float> fireGunDamage = weapons.GetFireGunDamage();
         foreach(var damage in fireGunDamage)
         {
@@ -270,6 +272,7 @@ public class Inventory : MonoBehaviour
     /// </summary>
     private void RefreshDiffStatsTexts() 
     {
+        // Armor
         Dictionary<string, float> armorSetResistence = armor.GetArmorSetResistance();
         foreach(var resistence in armorSetResistence)
         {
@@ -296,6 +299,52 @@ public class Inventory : MonoBehaviour
             }            
 
             TextMeshProUGUI text = armorStatsSection.Find(char.ToUpper(resistence.Key[0]) + resistence.Key.Substring(1) + "/DiffValue").GetComponent<TextMeshProUGUI>();
+            
+
+            if(diff > 0f)
+            {
+                text.SetText("+" + diff.ToString());
+                text.color = Color.green;
+            }
+            else if(diff == 0f)
+            {
+               text.SetText("-"); 
+               text.color = Color.white;
+            }
+            else
+            {
+                text.SetText(diff.ToString());
+                text.color = Color.red;
+            }
+        }
+
+        // FireGun
+        Dictionary<string, float> fireGunDamage = weapons.GetFireGunDamage();
+        foreach(var damage in fireGunDamage)
+        {
+            float diff = 0f;
+            if(selectedSlot != null && selectedSlot.item.category == ItemCategory.FireGun)
+            {               
+                Slot equipedFireGunSlot = weapons.GetFireGunSlot();
+                if(equipedFireGunSlot != null)
+                {   
+                    if(equipedFireGunSlot == selectedSlot) 
+                    {
+                        diff = -(float)equipedFireGunSlot.item.GetType().GetField(damage.Key).GetValue(equipedFireGunSlot.item);
+                    }
+                    else
+                    {
+                        diff += (float)selectedSlot.item.GetType().GetField(damage.Key).GetValue(selectedSlot.item);
+                        diff -= (float)equipedFireGunSlot.item.GetType().GetField(damage.Key).GetValue(equipedFireGunSlot.item);
+                    }
+                }
+                else
+                {
+                    diff = (float)selectedSlot.item.GetType().GetField(damage.Key).GetValue(selectedSlot.item);
+                }
+            }            
+
+            TextMeshProUGUI text = fireGunStatsSection.Find(char.ToUpper(damage.Key[0]) + damage.Key.Substring(1) + "/DiffValue").GetComponent<TextMeshProUGUI>();
             
 
             if(diff > 0f)
