@@ -67,6 +67,25 @@ public class PlayerArmor : MonoBehaviour
     }
 
     /// <summary>
+    /// Get Armor Slot.
+    /// </summary>
+    /// <param name="type">ArmorType of armor to get.</param>
+    public Slot GetArmorSlot(ArmorType type) 
+    {
+        switch (type)
+        {
+            case ArmorType.Head:
+                return headArmorSlot;
+            case ArmorType.Chest:
+                return chestArmorSlot;
+            case ArmorType.Legs:
+                return legsArmorSlot;
+            default:
+                return null;
+        }
+    }
+
+    /// <summary>
     /// Set Armor Slot.
     /// </summary>
     /// <param name="item">Slot to be equiped.</param>

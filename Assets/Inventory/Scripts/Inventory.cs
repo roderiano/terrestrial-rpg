@@ -167,7 +167,7 @@ public class Inventory : MonoBehaviour
     /// Delete all UI ActionButton`s and instantiate the new action by <paramref name="slot"/> Item.
     /// </summary>
     /// <param name="slot">Slot reference to instantiate ActionButton`s.</param>
-    public void RefreshActionButtons() 
+    private void RefreshActionButtons() 
     {
         GameObject action;
         Transform actions = inventoryCanvas.Find("Actions");    
@@ -212,33 +212,32 @@ public class Inventory : MonoBehaviour
     /// If <paramref name="slot"/> param is null, item details components has blank.
     /// </summary>
     /// <param name="slot">Slot reference to set values.</param>
-    public void RefreshItemDetailComponents(Slot slot) 
+    private void RefreshItemDetailComponents() 
     {
 		TextMeshProUGUI nameText = inventoryCanvas.Find("ItemsPanel/ItemDetail/Name").GetComponent<TextMeshProUGUI>();
         TextMeshProUGUI descriptionText = inventoryCanvas.Find("ItemsPanel/ItemDetail/Description").GetComponent<TextMeshProUGUI>();
 
-        nameText.SetText(slot == null ? "" : slot.item.name);
-        descriptionText.SetText(slot == null ? "" : slot.item.description);
+        nameText.SetText(selectedSlot == null ? "" : selectedSlot.item.name);
+        descriptionText.SetText(selectedSlot == null ? "" : selectedSlot.item.description);
     }
 
     /// <summary>
-    /// Use item of <paramref name="slot"/>.
+    /// Use item of selected slot.
     /// Refresh all components nedeed with new interaction. 
     /// </summary>
-    /// <param name="slot">Slot reference to use.</param>
-    public void UseItem(Slot slot) 
+    public void UseItem() 
     {
         Slot slotReference = null;
-        switch (slot.item.category)
+        switch (selectedSlot.item.category)
         {  
             case ItemCategory.FireGun:
-                slotReference = weapons.GetFireGunSlot() == slot ? null : slot;
+                slotReference = weapons.GetFireGunSlot() == selectedSlot ? null : selectedSlot;
                 weapons.SetFireGunSlot(slotReference);
                 break;
 
             case ItemCategory.Armor:
-                slotReference = armor.GetArmorSetSlots().Contains(slot) ? null : slot;
-                armor.SetArmorSlot(slotReference, ((Armor)slot.item).armorType);
+                slotReference = armor.GetArmorSetSlots().Contains(selectedSlot) ? null : selectedSlot;
+                armor.SetArmorSlot(slotReference, ((Armor)selectedSlot.item).armorType);
                 break;
         }
 
@@ -254,19 +253,66 @@ public class Inventory : MonoBehaviour
         Dictionary<string, float> armorResistence = armor.GetArmorSetResistance();
         foreach(var resistence in armorResistence)
         {
-            float value = armorResistence.ContainsKey(resistence.Key) ? armorResistence[resistence.Key] : 0f;
             string resistenceFieldPath = char.ToUpper(resistence.Key[0]) + resistence.Key.Substring(1) + "/Value";
-
-            armorStatsSection.Find(resistenceFieldPath).GetComponent<TextMeshProUGUI>().SetText(value.ToString());
+            armorStatsSection.Find(resistenceFieldPath).GetComponent<TextMeshProUGUI>().SetText(resistence.Value.ToString());
         }
 
         Dictionary<string, float> fireGunDamage = weapons.GetFireGunDamage();
         foreach(var damage in fireGunDamage)
         {
-            float value = fireGunDamage.ContainsKey(damage.Key) ? fireGunDamage[damage.Key] : 0f;
             string damageFieldPath = char.ToUpper(damage.Key[0]) + damage.Key.Substring(1) + "/Value";
+            fireGunStatsSection.Find(damageFieldPath).GetComponent<TextMeshProUGUI>().SetText(damage.Value.ToString());
+        }
+    }
 
-            fireGunStatsSection.Find(damageFieldPath).GetComponent<TextMeshProUGUI>().SetText(value.ToString());
+    /// <summary>
+    /// Refresh diff stats text's in UI.
+    /// </summary>
+    private void RefreshDiffStatsTexts() 
+    {
+        Dictionary<string, float> armorSetResistence = armor.GetArmorSetResistance();
+        foreach(var resistence in armorSetResistence)
+        {
+            float diff = 0f;
+            if(selectedSlot != null && selectedSlot.item.category == ItemCategory.Armor)
+            {               
+                Slot equipedArmorSlot = armor.GetArmorSlot(((Armor)selectedSlot.item).armorType);
+                if(equipedArmorSlot != null)
+                {   
+                    if(equipedArmorSlot == selectedSlot) 
+                    {
+                        diff = -(float)equipedArmorSlot.item.GetType().GetField(resistence.Key).GetValue(equipedArmorSlot.item);
+                    }
+                    else
+                    {
+                        diff += (float)selectedSlot.item.GetType().GetField(resistence.Key).GetValue(selectedSlot.item);
+                        diff -= (float)equipedArmorSlot.item.GetType().GetField(resistence.Key).GetValue(equipedArmorSlot.item);
+                    }
+                }
+                else
+                {
+                    diff = (float)selectedSlot.item.GetType().GetField(resistence.Key).GetValue(selectedSlot.item);
+                }
+            }            
+
+            TextMeshProUGUI text = armorStatsSection.Find(char.ToUpper(resistence.Key[0]) + resistence.Key.Substring(1) + "/DiffValue").GetComponent<TextMeshProUGUI>();
+            
+
+            if(diff > 0f)
+            {
+                text.SetText("+" + diff.ToString());
+                text.color = Color.green;
+            }
+            else if(diff == 0f)
+            {
+               text.SetText("-"); 
+               text.color = Color.white;
+            }
+            else
+            {
+                text.SetText(diff.ToString());
+                text.color = Color.red;
+            }
         }
     }
 
@@ -277,6 +323,10 @@ public class Inventory : MonoBehaviour
     public void SetSelectedSlot(Slot slot) 
     {
         selectedSlot = slot;
+
+        RefreshItemDetailComponents();
+        RefreshDiffStatsTexts();
+        RefreshActionButtons();
     }
 
     /// <summary>

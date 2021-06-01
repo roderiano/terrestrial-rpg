@@ -46,7 +46,7 @@ public class SlotButton : MonoBehaviour, IPointerEnterHandler, ISelectHandler
         if(slot != null)
         {
             if(slot.item != null)
-                inventory.UseItem(slot);
+                inventory.UseItem();
         }
     }
 
@@ -56,8 +56,6 @@ public class SlotButton : MonoBehaviour, IPointerEnterHandler, ISelectHandler
     public void OnSelect(BaseEventData eventData)
     {
         inventory.SetSelectedSlot(slot);
-        inventory.RefreshItemDetailComponents(slot);
-        inventory.RefreshActionButtons();
     }
 
     /// <summary>

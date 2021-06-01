@@ -9,17 +9,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2067f61f1372a884c8e3abd7bf68c174, type: 3}
+  m_Script: {fileID: 11500000, guid: 3b837514e96d55245b52260728146f5b, type: 3}
   m_Name: SMG
   m_EditorClassIdentifier: 
   id: SMG
-  description: tec tec tec tec......
+  description: Uhhh tec tec tec....
   weight: 5
   icon: {fileID: 21300000, guid: d12a161819d0603418c1166ba60de6e8, type: 3}
   category: 0
-  physical: 10
-  frost: 0
-  fire: 5
+  physical: 2
+  frost: 5
+  fire: 1
   magical: 0
-  decay: 0
-  fireMode: 0
+  decay: 10
+  fireMode: 1
