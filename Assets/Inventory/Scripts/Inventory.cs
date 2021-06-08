@@ -33,7 +33,6 @@ public class Inventory : MonoBehaviour
     private PlayerArmor armor;
     private PlayerWeapons weapons;
     private PlayerMovement movement;
-    private PlayerAim aim;
     private List<Slot> slots = new List<Slot>();
     private Slot selectedSlot = null;
 
@@ -42,7 +41,6 @@ public class Inventory : MonoBehaviour
         armor = GetComponent<PlayerArmor>();
         weapons = GetComponent<PlayerWeapons>();
         movement = GetComponent<PlayerMovement>();
-        aim = GetComponent<PlayerAim>();
     }
 
     void Update()
@@ -50,7 +48,6 @@ public class Inventory : MonoBehaviour
         // Enable and disable inventory UI.
         if(Input.GetButtonDown("Inventory"))
         {
-            aim.SetActive(inventoryCanvas.gameObject.activeInHierarchy);
             movement.SetActive(inventoryCanvas.gameObject.activeInHierarchy);
             inventoryCanvas.gameObject.SetActive(!inventoryCanvas.gameObject.activeInHierarchy);
             RefreshSlotButtons();

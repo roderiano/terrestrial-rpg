@@ -14,13 +14,6 @@ public class PlayerWeapons : MonoBehaviour
 
     void Update()
     {
-        if(refLeftHand != null && refRightHand != null)
-        {
-            leftArmIK.data.target.position = refLeftHand.position;
-            leftArmIK.data.target.rotation = refLeftHand.rotation;
-            rightArmIK.data.target.position = refRightHand.position;
-            rightArmIK.data.target.rotation = refRightHand.rotation;
-        }
     }
     
     private void EnableFireGun(Slot slot)

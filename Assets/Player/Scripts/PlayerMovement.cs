@@ -4,7 +4,7 @@ using Cinemachine;
 public class PlayerMovement : MonoBehaviour 
 {
     [SerializeField]
-    private float speed;
+    private float speed, jumpForce, jumpTime;
     [Range(0f, 1f)]
     [SerializeField]
     private float radiusCheckPoint;
@@ -17,9 +17,10 @@ public class PlayerMovement : MonoBehaviour
     private Quaternion chestRotation;
     private Transform groundCheckPoint;
     private Transform chestBoneTransform;
-    private CharacterController characterController;
     private PlayerWeapons weapons;
-    
+    private Rigidbody rb;
+    private bool isJumping;
+    private float jumpTimeCounter;
 
 
     //--> MonoBehaviour methods
@@ -27,10 +28,11 @@ public class PlayerMovement : MonoBehaviour
     {
         active = true;
         animator = GetComponent<Animator>();
-        characterController = GetComponent<CharacterController>();
         groundCheckPoint = transform.Find("GroundCheckPoint");
         chestBoneTransform = animator.GetBoneTransform(HumanBodyBones.Chest);
         weapons = GetComponent<PlayerWeapons>();
+        rb = GetComponent<Rigidbody>();
+        rb.useGravity = false;
     }
 
     void OnDrawGizmos()
@@ -41,13 +43,56 @@ public class PlayerMovement : MonoBehaviour
             Gizmos.DrawSphere(groundCheckPoint.position, radiusCheckPoint);
     }
 
+    void Update()
+    {
+        if(IsGrounded() && Input.GetButtonDown("Get")) 
+        {
+            isJumping = true;
+            jumpTimeCounter = jumpTime;
+            rb.velocity = Vector3.up * jumpForce;
+        } 
+
+        if(Input.GetButton("Get") && isJumping)
+        {
+            if(jumpTimeCounter > 0f)
+            {
+                rb.velocity = Vector3.up * jumpForce;
+                jumpTimeCounter -= Time.deltaTime;
+            }
+            else
+            {
+                isJumping = false;
+            }
+        }
+
+        if(Input.GetButtonUp("Get"))
+            isJumping = false;
+
+        SetAnimatorParams();
+
+    }
+
 
     //--> Public methods
     public void Movement() 
     {
         SetRotation();
         ApplyGravity();
-        SetAnimatorParams();
+
+        if(!IsGrounded())
+        {
+            Vector3 direction = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
+            Transform cameraTransform = Camera.main.transform;
+            
+            direction = (Input.GetButton("Aim") || Input.GetAxis("Aim") != 0f) && weapons.GetFireGunSlot() != null ? cameraTransform.forward : cameraTransform.TransformDirection(direction).normalized;
+            rb.velocity = new Vector3(direction.x * speed, rb.velocity.y, direction.z * speed);
+        }
+    }
+
+    private void ApplyGravity() 
+    {
+        Vector3 gravity = -9.81f * 10f * Vector3.up;
+        rb.AddForce(gravity, ForceMode.Acceleration);
     }
 
 
@@ -61,23 +106,11 @@ public class PlayerMovement : MonoBehaviour
             
             direction = (Input.GetButton("Aim") || Input.GetAxis("Aim") != 0f) && weapons.GetFireGunSlot() != null ? cameraTransform.forward : cameraTransform.TransformDirection(direction).normalized;
             direction.y = 0f;
-            
+
+
             if(direction != Vector3.zero)
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), 10f * Time.deltaTime); 
         }
-    }
-
-    private void ApplyGravity()  {
-        float gravity = 0f;
-        if (IsGrounded()) 
-        {
-            gravity =  -characterController.stepOffset / Time.deltaTime;
-        } else {
-            gravity -= 200f * Time.deltaTime;
-        }
-
-        Vector3 gravityDirection = new Vector3 (0f, gravity, 0f);
-        characterController.Move(gravityDirection * Time.deltaTime);
     }
 
     private void SetAnimatorParams() 
@@ -86,7 +119,7 @@ public class PlayerMovement : MonoBehaviour
 
         if(active)
         {
-            speed = Input.GetAxis("Horizontal") * Input.GetAxis("Horizontal") + Input.GetAxis("Vertical") * Input.GetAxis("Vertical");
+            speed = Input.GetAxisRaw("Horizontal") * Input.GetAxisRaw("Horizontal") + Input.GetAxisRaw("Vertical") * Input.GetAxisRaw("Vertical");
         } 
         else
         {
@@ -95,22 +128,14 @@ public class PlayerMovement : MonoBehaviour
         }  
         
         animator.SetFloat("Speed", speed);
-        animator.SetFloat("Vertical", Input.GetAxis("Vertical"));
-        animator.SetFloat("Horizontal", Input.GetAxis("Horizontal")); 
+        animator.SetFloat("Vertical", Input.GetAxisRaw("Vertical"));
+        animator.SetFloat("Horizontal", Input.GetAxisRaw("Horizontal")); 
+        animator.SetBool("IsGrounded", IsGrounded());
     }
 
     private bool IsGrounded() 
     {
-        if(characterController.isGrounded)
-        {
-            return true;
-        }
-        else if(Physics.CheckSphere(groundCheckPoint.position, radiusCheckPoint, groundMask))
-        {
-            return true;
-        }
-        
-        return false;
+        return Physics.CheckSphere(groundCheckPoint.position, radiusCheckPoint, groundMask);
     }
 
     public void SetActive(bool value) 
