@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Cinemachine;
+using UnityEditor;
 
 public class PlayerMovement : MonoBehaviour 
 {
@@ -18,7 +18,7 @@ public class PlayerMovement : MonoBehaviour
     private Transform groundCheckPoint;
     private Transform chestBoneTransform;
     private PlayerWeapons weapons;
-    private Rigidbody rb;
+    private CharacterController characterController;
     private bool isJumping;
     private float jumpTimeCounter;
 
@@ -31,68 +31,50 @@ public class PlayerMovement : MonoBehaviour
         groundCheckPoint = transform.Find("GroundCheckPoint");
         chestBoneTransform = animator.GetBoneTransform(HumanBodyBones.Chest);
         weapons = GetComponent<PlayerWeapons>();
-        rb = GetComponent<Rigidbody>();
-        rb.useGravity = false;
+        characterController = GetComponent<CharacterController>();
     }
 
     void OnDrawGizmos()
     {
-        Gizmos.color = Color.red;
+        GUI.color = Gizmos.color = IsGrounded() ? Color.green : Color.red;
+        GUIStyle style = GUI.skin.GetStyle("Label");
+        style.alignment = TextAnchor.UpperCenter;
 
         if(groundCheckPoint != null)
-            Gizmos.DrawSphere(groundCheckPoint.position, radiusCheckPoint);
+        {
+            Gizmos.DrawWireSphere(groundCheckPoint.position, radiusCheckPoint);
+            Handles.Label(
+                groundCheckPoint.position + new Vector3(0f, radiusCheckPoint + .25f, 0f), 
+                IsGrounded() ? "isGrounded true" : "isGrounded false",
+                style
+            );
+        }   
     }
 
+    
+
+    void FixedUpdate()
+    {
+        
+    }
+    
     void Update()
     {
-        if(IsGrounded() && Input.GetButtonDown("Get")) 
-        {
-            isJumping = true;
-            jumpTimeCounter = jumpTime;
-            rb.velocity = Vector3.up * jumpForce;
-        } 
-
-        if(Input.GetButton("Get") && isJumping)
-        {
-            if(jumpTimeCounter > 0f)
-            {
-                rb.velocity = Vector3.up * jumpForce;
-                jumpTimeCounter -= Time.deltaTime;
-            }
-            else
-            {
-                isJumping = false;
-            }
-        }
-
-        if(Input.GetButtonUp("Get"))
-            isJumping = false;
-
+        Movement();
+        SetRotation();
         SetAnimatorParams();
-
     }
 
 
     //--> Public methods
     public void Movement() 
     {
-        SetRotation();
-        ApplyGravity();
-
-        if(!IsGrounded())
-        {
-            Vector3 direction = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
-            Transform cameraTransform = Camera.main.transform;
-            
-            direction = (Input.GetButton("Aim") || Input.GetAxis("Aim") != 0f) && weapons.GetFireGunSlot() != null ? cameraTransform.forward : cameraTransform.TransformDirection(direction).normalized;
-            rb.velocity = new Vector3(direction.x * speed, rb.velocity.y, direction.z * speed);
-        }
-    }
-
-    private void ApplyGravity() 
-    {
-        Vector3 gravity = -9.81f * 10f * Vector3.up;
-        rb.AddForce(gravity, ForceMode.Acceleration);
+        Vector3 direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
+        Transform cameraTransform = Camera.main.transform;
+        direction = cameraTransform.TransformDirection(direction).normalized;
+        direction.y = 0f;
+        characterController.Move(direction * speed * Time.deltaTime);
+        
     }
 
 
@@ -104,12 +86,11 @@ public class PlayerMovement : MonoBehaviour
             Vector3 direction = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
             Transform cameraTransform = Camera.main.transform;
             
-            direction = (Input.GetButton("Aim") || Input.GetAxis("Aim") != 0f) && weapons.GetFireGunSlot() != null ? cameraTransform.forward : cameraTransform.TransformDirection(direction).normalized;
+            direction = Input.GetKey(KeyCode.Mouse1) && weapons.GetFireGunSlot() != null ? cameraTransform.forward : cameraTransform.TransformDirection(direction).normalized;
             direction.y = 0f;
 
-
             if(direction != Vector3.zero)
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), 10f * Time.deltaTime); 
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), 25f * Time.deltaTime); 
         }
     }
 
@@ -131,11 +112,15 @@ public class PlayerMovement : MonoBehaviour
         animator.SetFloat("Vertical", Input.GetAxisRaw("Vertical"));
         animator.SetFloat("Horizontal", Input.GetAxisRaw("Horizontal")); 
         animator.SetBool("IsGrounded", IsGrounded());
+        animator.SetBool("IsAiming", Input.GetKey(KeyCode.Mouse1) && weapons.GetFireGunSlot() != null);
     }
 
     private bool IsGrounded() 
     {
-        return Physics.CheckSphere(groundCheckPoint.position, radiusCheckPoint, groundMask);
+        if(groundCheckPoint != null)
+            return Physics.CheckSphere(groundCheckPoint.position, radiusCheckPoint, groundMask);
+
+        return false;
     }
 
     public void SetActive(bool value) 

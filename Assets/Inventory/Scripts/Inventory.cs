@@ -46,13 +46,13 @@ public class Inventory : MonoBehaviour
     void Update()
     {
         // Enable and disable inventory UI.
-        if(Input.GetButtonDown("Inventory"))
+        if(Input.GetKeyDown(KeyCode.Tab))
         {
             movement.SetActive(inventoryCanvas.gameObject.activeInHierarchy);
             inventoryCanvas.gameObject.SetActive(!inventoryCanvas.gameObject.activeInHierarchy);
             RefreshSlotButtons();
         }
-        else if(Input.GetButtonDown("Drop") && inventoryCanvas.gameObject.activeInHierarchy)
+        else if(Input.GetKeyDown(KeyCode.LeftShift) && inventoryCanvas.gameObject.activeInHierarchy)
         {
             DropItem();
         }
@@ -382,7 +382,7 @@ public class Inventory : MonoBehaviour
     {
         ItemDrop itemDrop = collider.gameObject.GetComponent<ItemDrop>();
         
-        if(itemDrop && Input.GetButtonDown("Get"))
+        if(itemDrop && Input.GetKey(KeyCode.E))
         {
             AddItem(itemDrop.item, 1);
             Destroy(collider.gameObject);
