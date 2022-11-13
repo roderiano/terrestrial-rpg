@@ -107,10 +107,18 @@ public class PlayerMovement : MonoBehaviour
             pausingSpeed = Mathf.Lerp(pausingSpeed, 0, Time.deltaTime * 10);
             speed = pausingSpeed;
         }  
+
+        float currentSpeed = animator.GetFloat("Speed");
+        float currentHorizontal = animator.GetFloat("Horizontal");
+        float currentVertical = animator.GetFloat("Vertical");
+
+        currentSpeed = Mathf.Lerp(currentSpeed, speed, 10f * Time.deltaTime);
+        currentHorizontal = Mathf.Lerp(currentHorizontal, Input.GetAxisRaw("Horizontal"), 10 * Time.deltaTime);
+        currentVertical = Mathf.Lerp(currentVertical, Input.GetAxisRaw("Vertical"), 10 * Time.deltaTime);
         
         animator.SetFloat("Speed", speed);
-        animator.SetFloat("Vertical", Input.GetAxisRaw("Vertical"));
-        animator.SetFloat("Horizontal", Input.GetAxisRaw("Horizontal")); 
+        animator.SetFloat("Vertical", currentVertical);
+        animator.SetFloat("Horizontal", currentHorizontal); 
         animator.SetBool("IsGrounded", IsGrounded());
         animator.SetBool("IsAiming", Input.GetKey(KeyCode.Mouse1) && weapons.GetFireGunSlot() != null);
     }
