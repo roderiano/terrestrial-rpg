@@ -14,13 +14,9 @@ public class PlayerMovement : MonoBehaviour
     private float pausingSpeed;
     private bool active;
     private Animator animator;
-    private Quaternion chestRotation;
     private Transform groundCheckPoint;
-    private Transform chestBoneTransform;
     private PlayerWeapons weapons;
     private CharacterController characterController;
-    private bool isJumping;
-    private float jumpTimeCounter;
 
 
     //--> MonoBehaviour methods
@@ -29,7 +25,6 @@ public class PlayerMovement : MonoBehaviour
         active = true;
         animator = GetComponent<Animator>();
         groundCheckPoint = transform.Find("GroundCheckPoint");
-        chestBoneTransform = animator.GetBoneTransform(HumanBodyBones.Chest);
         weapons = GetComponent<PlayerWeapons>();
         characterController = GetComponent<CharacterController>();
     }
@@ -51,8 +46,6 @@ public class PlayerMovement : MonoBehaviour
         }   
     }
 
-    
-
     void FixedUpdate()
     {
         
@@ -72,7 +65,12 @@ public class PlayerMovement : MonoBehaviour
         Vector3 direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
         Transform cameraTransform = Camera.main.transform;
         direction = cameraTransform.TransformDirection(direction).normalized;
-        direction.y = 0f;
+
+        if(!IsGrounded())
+            direction.y -= 70f * Time.deltaTime;
+        else
+            direction.y = 0f;
+
         characterController.Move(direction * speed * Time.deltaTime);
         
     }
@@ -116,7 +114,7 @@ public class PlayerMovement : MonoBehaviour
         currentHorizontal = Mathf.Lerp(currentHorizontal, Input.GetAxisRaw("Horizontal"), 10 * Time.deltaTime);
         currentVertical = Mathf.Lerp(currentVertical, Input.GetAxisRaw("Vertical"), 10 * Time.deltaTime);
         
-        animator.SetFloat("Speed", speed);
+        animator.SetFloat("Speed", currentSpeed);
         animator.SetFloat("Vertical", currentVertical);
         animator.SetFloat("Horizontal", currentHorizontal); 
         animator.SetBool("IsGrounded", IsGrounded());
