@@ -17,6 +17,9 @@ public class PlayerMovement : MonoBehaviour
     private Transform groundCheckPoint;
     private PlayerWeapons weapons;
     private CharacterController characterController;
+    public float jumpHeight = 1.0f;
+    public float gravityValue = -9.81f;
+    private Vector3 playerVelocity;
 
 
     //--> MonoBehaviour methods
@@ -65,13 +68,25 @@ public class PlayerMovement : MonoBehaviour
         Vector3 direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
         Transform cameraTransform = Camera.main.transform;
         direction = cameraTransform.TransformDirection(direction).normalized;
+        direction.y = 0f;
 
-        if(!IsGrounded())
-            direction.y -= 70f * Time.deltaTime;
-        else
-            direction.y = 0f;
+        if (IsGrounded() && playerVelocity.y < 0)
+        {
+            playerVelocity.y = 0f;
+            characterController.height = 7.5f;
+        }
 
         characterController.Move(direction * speed * Time.deltaTime);
+
+        if (Input.GetButtonDown("Jump") && IsGrounded())
+        {
+            animator.SetTrigger("Jump");
+            playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
+            characterController.height = 3.75f;
+        }
+
+        playerVelocity.y += gravityValue * Time.deltaTime;
+        characterController.Move(playerVelocity * Time.deltaTime);
         
     }
 
