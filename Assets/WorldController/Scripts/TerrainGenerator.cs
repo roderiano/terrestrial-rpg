@@ -6,12 +6,12 @@ using System.IO;
 public static class TerrainGenerator
 {
 
-    public static GameObject GenerateTerrain(float[,] _noiseMap, Material terrainMaterial, Vector2 chunck)
+    public static GameObject GenerateTerrain(float[,] _noiseMap, Material terrainMaterial, Vector2 chunck, float sizeMultiplier)
     {
         int _width = _noiseMap.GetLength(0);
         int _height = _noiseMap.GetLength(1);
 
-        Vector3[] vertices = GenerateTerrainVertices(_noiseMap);
+        Vector3[] vertices = GenerateTerrainVertices(_noiseMap, sizeMultiplier);
         int[] triangles = GenerateTerrainTriangles(_width, _height);
         Vector2[] uv = GenerateTerrainUV(vertices, _width, _height);
         
@@ -33,12 +33,12 @@ public static class TerrainGenerator
         mesh.RecalculateNormals();
         
         meshCollider.sharedMesh = meshFilter.mesh;
-        terrain.transform.position = new Vector3(chunck.x * _width, 0f, chunck.y * _height);
+        terrain.transform.position = new Vector3(chunck.x * _width, 0f, chunck.y * _height) * sizeMultiplier;
 
         return terrain;
     }
     
-    public static Vector3[] GenerateTerrainVertices(float[,] _noiseMap)
+    public static Vector3[] GenerateTerrainVertices(float[,] _noiseMap, float sizeMultiplier)
     {
         int _width = _noiseMap.GetLength(0);
         int _height = _noiseMap.GetLength(1);
@@ -49,7 +49,7 @@ public static class TerrainGenerator
 			for (int x = 0; x <= _width; x++, i++) 
             {
                 float noise = _noiseMap[x == _width ? x - 1 : x, z == _height ? z - 1 : z];  
-				vertices[i] = new Vector3(x, noise * 100, z);
+				vertices[i] = new Vector3(x, noise * 100f, z) * sizeMultiplier;
 			}
 		}
 
