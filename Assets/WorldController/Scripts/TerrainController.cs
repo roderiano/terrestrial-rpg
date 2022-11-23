@@ -6,7 +6,7 @@ public class TerrainController : MonoBehaviour
 {
     [Range(0f, 10f)]
     public float redistribuition;
-    [Range(100f, 500f)]
+    [Range(10f, 250f)]
     public int size;
     public int octaves;
     public float scale;
@@ -49,9 +49,9 @@ public class TerrainController : MonoBehaviour
                 });  
                 Thread.Sleep(50);  
                 
-                for(int x = (int)rootChunck.x - 2; x <= (int)rootChunck.x + 2; x++)
+                for(int x = (int)rootChunck.x; x <= (int)rootChunck.x; x++)
                 {
-                    for(int z = (int)rootChunck.y - 2; z <= (int)rootChunck.y + 2; z++)
+                    for(int z = (int)rootChunck.y; z <= (int)rootChunck.y; z++)
                     {
                         Vector2 areaChunck = new Vector2(rootChunck.x + x, rootChunck.y + z);
                         
