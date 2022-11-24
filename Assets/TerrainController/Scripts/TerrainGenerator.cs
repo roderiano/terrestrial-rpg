@@ -6,7 +6,7 @@ using System.IO;
 public static class TerrainGenerator
 {
 
-    public static GameObject GenerateTerrain(float[,] _noiseMap, Material terrainMaterial, Vector2 chunck, float sizeMultiplier)
+    public static GameObject GenerateTerrain(float[,] _noiseMap, Material[] terrainMaterials, Vector2 chunck, float sizeMultiplier)
     {
         int _width = _noiseMap.GetLength(0);
         int _height = _noiseMap.GetLength(1);
@@ -23,8 +23,8 @@ public static class TerrainGenerator
         MeshCollider meshCollider = terrain.AddComponent<MeshCollider>();
         
         meshFilter.mesh = mesh;
-        meshRenderer.material = terrainMaterial;
-        // meshRenderer.material.SetTexture("_MainTex", TextureGenerator.NoiseTextureFromHeightMap(_noiseMap));
+        meshRenderer.materials = terrainMaterials;
+        meshRenderer.materials[0].SetTexture("_MainTex", TextureGenerator.NoiseTextureFromHeightMap(_noiseMap));
 
         mesh.Clear();
         mesh.vertices = vertices;

@@ -11,7 +11,7 @@ public class TerrainController : MonoBehaviour
     public int octaves;
     public float scale;
     public float sizeMultiplier;
-    public Material terrainMaterial;
+    public Material[] terrainMaterials;
     public GameObject oceanChunck;
 
     private float[,] noiseMap;
@@ -63,9 +63,9 @@ public class TerrainController : MonoBehaviour
                             noiseMap = FallOffGenerator.ApplyFallOffMap(noiseMap, size);
 
                             UnityMainThread.wkr.AddJob(() => {
-                                GameObject terrain = TerrainGenerator.GenerateTerrain(noiseMap, terrainMaterial, areaChunck, sizeMultiplier);
+                                GameObject terrain = TerrainGenerator.GenerateTerrain(noiseMap, terrainMaterials, areaChunck, sizeMultiplier);
                                 GameObject oceanTerrainChunck = GameObject.Instantiate(oceanChunck, terrain.transform.position, terrain.transform.rotation, terrain.transform);
-                                oceanTerrainChunck.transform.position = new Vector3(oceanTerrainChunck.transform.position.x + (125f * sizeMultiplier), 4f, oceanTerrainChunck.transform.position.z + (125f * sizeMultiplier));
+                                oceanTerrainChunck.transform.position = new Vector3(oceanTerrainChunck.transform.position.x + 175f, 4f, oceanTerrainChunck.transform.position.z + 175f);
                             });      
 
 
