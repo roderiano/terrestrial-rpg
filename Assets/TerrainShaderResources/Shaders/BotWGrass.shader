@@ -365,7 +365,6 @@ Shader "Custom/BotWGrass"
             {
 				float4 color = tex2D(_BladeTexture, i.uv);
 
-			#ifdef _MAIN_LIGHT_SHADOWS
 				VertexPositionInputs vertexInput = (VertexPositionInputs)0;
 				vertexInput.positionWS = i.worldPos;
 
@@ -373,7 +372,6 @@ Shader "Custom/BotWGrass"
 				half shadowAttenuation = saturate(MainLightRealtimeShadow(shadowCoord) + 0.25f);
 				float4 shadowColor = lerp(0.0f, 1.0f, shadowAttenuation);
 				color *= shadowColor;
-			#endif
 
                 return color * lerp(_BaseColor, _TipColor, i.uv.y);
 			}
