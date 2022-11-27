@@ -12,12 +12,14 @@ public class TerrainController : MonoBehaviour
     public float scale;
     public float sizeMultiplier;
     public Material[] terrainMaterials;
-    public GameObject oceanChunck;
+    public GameObject oceanChunk;
+    public GameObject tree;
+
 
     private float[,] noiseMap;
     
     private Texture2D texture;
-    public Dictionary<Vector2, float[,]> instantiatedChuncks = new Dictionary<Vector2, float[,]>();
+    public Dictionary<Vector2, float[,]> instantiatedChunks = new Dictionary<Vector2, float[,]>();
 
     private Thread t1;
     private GameObject[] players;
@@ -42,30 +44,32 @@ public class TerrainController : MonoBehaviour
 
             foreach (GameObject player in players)
             {
-                Vector2 rootChunck = new Vector2();
+                Vector2 rootChunk = new Vector2();
 
                 UnityMainThread.wkr.AddJob(() => {
-                    rootChunck = new Vector2((int)(player.transform.position.x / size), (int)(player.transform.position.z / size));
+                    rootChunk = new Vector2((int)(player.transform.position.x / size), (int)(player.transform.position.z / size));
                 });  
                 Thread.Sleep(50);  
                 
-                for(int x = (int)rootChunck.x; x <= (int)rootChunck.x; x++)
+                for(int x = (int)rootChunk.x; x <= (int)rootChunk.x; x++)
                 {
-                    for(int z = (int)rootChunck.y; z <= (int)rootChunck.y; z++)
+                    for(int z = (int)rootChunk.y; z <= (int)rootChunk.y; z++)
                     {
-                        Vector2 areaChunck = new Vector2(rootChunck.x + x, rootChunck.y + z);
+                        Vector2 areaChunk = new Vector2(rootChunk.x + x, rootChunk.y + z);
                         
-                        if(!instantiatedChuncks.ContainsKey(areaChunck))
+                        if(!instantiatedChunks.ContainsKey(areaChunk))
                         {
-                            instantiatedChuncks.Add(areaChunck, null);
-                            noiseMap = Noise.GenerateNoiseMap(size, size, scale, octaves, redistribuition, areaChunck);
-                            instantiatedChuncks[areaChunck] = noiseMap;
+                            instantiatedChunks.Add(areaChunk, null);
+                            noiseMap = Noise.GenerateNoiseMap(size, size, scale, octaves, redistribuition, areaChunk);
+                            instantiatedChunks[areaChunk] = noiseMap;
                             noiseMap = FallOffGenerator.ApplyFallOffMap(noiseMap, size);
 
                             UnityMainThread.wkr.AddJob(() => {
-                                GameObject terrain = TerrainGenerator.GenerateTerrain(noiseMap, terrainMaterials, areaChunck, sizeMultiplier);
-                                GameObject oceanTerrainChunck = GameObject.Instantiate(oceanChunck, terrain.transform.position, terrain.transform.rotation, terrain.transform);
-                                oceanTerrainChunck.transform.position = new Vector3(oceanTerrainChunck.transform.position.x + 175f, 4f, oceanTerrainChunck.transform.position.z + 175f);
+                                GameObject terrain = TerrainGenerator.GenerateTerrain(noiseMap, terrainMaterials, areaChunk, sizeMultiplier);
+                                TerrainGenerator.GenerateTrees(terrain, tree);
+
+                                GameObject oceanTerrainChunk = GameObject.Instantiate(oceanChunk, terrain.transform.position, terrain.transform.rotation, terrain.transform);
+                                oceanTerrainChunk.transform.position = new Vector3(oceanTerrainChunk.transform.position.x + 175f, 4f, oceanTerrainChunk.transform.position.z + 175f);
                             });      
 
 
@@ -75,7 +79,7 @@ public class TerrainController : MonoBehaviour
                                 // {
                                     // if(noiseMap[_x, _y] > 0.05f)
                                     // {
-                                        // Vector3 propPos = new Vector3((areaChunck.x * size) + _x, noiseMap[_x, _y] * 100, (areaChunck.y * size) + _y);
+                                        // Vector3 propPos = new Vector3((areaChunk.x * size) + _x, noiseMap[_x, _y] * 100, (areaChunk.y * size) + _y);
 
                                         // UnityMainThread.wkr.AddJob(() => {
                                             // if(Random.Range(0, 100) < 5)

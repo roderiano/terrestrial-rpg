@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 using System.IO;
 
 public static class TerrainGenerator
 {
 
-    public static GameObject GenerateTerrain(float[,] _noiseMap, Material[] terrainMaterials, Vector2 chunck, float sizeMultiplier)
+    public static GameObject GenerateTerrain(float[,] _noiseMap, Material[] terrainMaterials, Vector2 chunk, float sizeMultiplier)
     {
         int _width = _noiseMap.GetLength(0);
         int _height = _noiseMap.GetLength(1);
@@ -33,7 +34,7 @@ public static class TerrainGenerator
         mesh.RecalculateNormals();
         
         meshCollider.sharedMesh = meshFilter.mesh;
-        terrain.transform.position = new Vector3(chunck.x * _width, 0f, chunck.y * _height) * sizeMultiplier;
+        terrain.transform.position = new Vector3(chunk.x * _width, 0f, chunk.y * _height) * sizeMultiplier;
 
         return terrain;
     }
@@ -84,5 +85,33 @@ public static class TerrainGenerator
 		}
 
         return uv;
+    }
+
+    public static void GenerateTrees(GameObject terrain, GameObject tree) 
+    {
+        int treeCount = 10;
+        var mesh = terrain.GetComponent<MeshFilter>();
+        var groundPositions = new List<Vector3>();
+
+        var meshVertices = mesh.sharedMesh.vertices;
+        foreach(var v in meshVertices) {
+            // armazena na lista groundPositions todas as posiçoes do mesh com y > 5f
+            if(v.y > 5f) {
+                groundPositions.Add(v);
+            }
+        }
+
+        var eligibleRange = groundPositions.Count;
+        var newTree = tree;
+        for (int i = 0; i < treeCount; i++) {
+            var randomIndex = Random.Range(0, eligibleRange - 1);
+            var randomPosition = groundPositions.ElementAt(randomIndex);
+
+            var randomRotation = Quaternion.Euler(new Vector3(0, Random.Range(0f, 360f), 0));
+            newTree.transform.localScale = Vector3.one * Random.Range(1.5f, 3.5f);
+
+            GameObject.Instantiate(tree, randomPosition, randomRotation);
+            Debug.Log(randomPosition);
+        }
     }
 }

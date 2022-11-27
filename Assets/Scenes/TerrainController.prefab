@@ -45,14 +45,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09043f025aeaad84abb1a2a4577acd60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  redistribuition: 0.65
-  size: 250
+  redistribuition: 2
+  size: 70
   octaves: 5
-  scale: 5
-  sizeMultiplier: 6
-  terrainMaterial: {fileID: 2100000, guid: d5615ff7496760f4eaaf3cfbf2cf9956, type: 2}
-  oceanChunck: {fileID: 4229569028231740741, guid: 0915eeb41be038046a621d5154b1cdd4,
+  scale: 2
+  sizeMultiplier: 5
+  terrainMaterials:
+  - {fileID: 2100000, guid: 8ee338d25ef86f1408b89f7ffe3487d9, type: 2}
+  - {fileID: 2100000, guid: 5965aca0bb4b2ac44a6432512cb39fd5, type: 2}
+  oceanChunk: {fileID: 4229569028231740741, guid: 0915eeb41be038046a621d5154b1cdd4,
     type: 3}
+  tree: {fileID: 1881369624056886901, guid: 58c28851e5b00ce42bf13b79167188d8, type: 3}
 --- !u!114 &738073531611928588
 MonoBehaviour:
   m_ObjectHideFlags: 0
