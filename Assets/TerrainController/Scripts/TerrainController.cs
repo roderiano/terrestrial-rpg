@@ -70,26 +70,7 @@ public class TerrainController : MonoBehaviour
 
                                 GameObject oceanTerrainChunk = GameObject.Instantiate(oceanChunk, terrain.transform.position, terrain.transform.rotation, terrain.transform);
                                 oceanTerrainChunk.transform.position = new Vector3(oceanTerrainChunk.transform.position.x + 175f, 4f, oceanTerrainChunk.transform.position.z + 175f);
-                            });      
-
-
-                            // for (int _y = 0; _y < size; _y++)
-                            // {
-                                // for (int _x = 0; _x < size; _x++)
-                                // {
-                                    // if(noiseMap[_x, _y] > 0.05f)
-                                    // {
-                                        // Vector3 propPos = new Vector3((areaChunk.x * size) + _x, noiseMap[_x, _y] * 100, (areaChunk.y * size) + _y);
-
-                                        // UnityMainThread.wkr.AddJob(() => {
-                                            // if(Random.Range(0, 100) < 5)
-                                                // PhotonNetwork.Instantiate("Terrain/Trees/Tree1", propPos, transform.rotation);
-                                        // });  
- 
-                                        // Thread.Sleep(10);
-                                    // }
-                                // }
-                            // }                
+                            });                 
                         }
                     }
                 }

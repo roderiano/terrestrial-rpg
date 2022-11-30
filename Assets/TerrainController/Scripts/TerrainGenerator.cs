@@ -8,7 +8,7 @@ public static class TerrainGenerator
 {
 
     public static GameObject GenerateTerrain(float[,] _noiseMap, Material[] terrainMaterials, Vector2 chunk, float sizeMultiplier)
-    {
+    {   
         int _width = _noiseMap.GetLength(0);
         int _height = _noiseMap.GetLength(1);
 
@@ -89,29 +89,24 @@ public static class TerrainGenerator
 
     public static void GenerateTrees(GameObject terrain, GameObject tree) 
     {
-        int treeCount = 10;
-        var mesh = terrain.GetComponent<MeshFilter>();
-        var groundPositions = new List<Vector3>();
+        const int TREE_COUNT_PER_ISLAND = 10;
+        
+        MeshFilter mesh = terrain.GetComponent<MeshFilter>();
+        Vector3[] meshVertices = mesh.sharedMesh.vertices;
 
-        var meshVertices = mesh.sharedMesh.vertices;
-        foreach(var v in meshVertices) {
-            // armazena na lista groundPositions todas as posiçoes do mesh com y > 5f
-            if(v.y > 5f) {
-                groundPositions.Add(v);
-            }
-        }
+        List<Vector3> elegibleGroundPositions = new List<Vector3>();
+        elegibleGroundPositions.AddRange(meshVertices);
+        elegibleGroundPositions = elegibleGroundPositions.FindAll(vert => vert.y > 5f);
 
-        var eligibleRange = groundPositions.Count;
-        var newTree = tree;
-        for (int i = 0; i < treeCount; i++) {
-            var randomIndex = Random.Range(0, eligibleRange - 1);
-            var randomPosition = groundPositions.ElementAt(randomIndex);
-
-            var randomRotation = Quaternion.Euler(new Vector3(0, Random.Range(0f, 360f), 0));
+        int treeCount = 0;
+        while(treeCount < TREE_COUNT_PER_ISLAND)
+        {
+            Vector3 randomPosition = elegibleGroundPositions[Random.Range(0, elegibleGroundPositions.Count - 1)];
+            Quaternion randomRotation = Quaternion.Euler(new Vector3(0, Random.Range(0f, 360f), 0));
+            GameObject newTree = GameObject.Instantiate(tree, randomPosition, randomRotation);
             newTree.transform.localScale = Vector3.one * Random.Range(1.5f, 3.5f);
 
-            GameObject.Instantiate(tree, randomPosition, randomRotation);
-            Debug.Log(randomPosition);
+            treeCount++;
         }
     }
 }
