@@ -7,6 +7,7 @@ public static class Noise
 
     public static float[,] GenerateNoiseMap(int _width, int _height, float _scale, int _octaves, float _redistribuition, Vector2 chunck)
     {
+        Debug.Log(chunck);
         float[,] noiseMap = new float[_width, _height];
 
         for (int y = 0; y < _height; y++)
@@ -21,7 +22,7 @@ public static class Noise
                 for (int oct = 1; oct < _octaves; oct *= 2)
                 {
                     frequency += 1f / oct;
-                    noise += (1f / oct) * Mathf.PerlinNoise(oct * (sampleX + (chunck.x * _width)), oct * sampleY + ((chunck.y * _height)));
+                    noise += (1f / oct) * Mathf.PerlinNoise(oct * (sampleX + (chunck.x * _width)), oct * (sampleY + (chunck.y * _height)));
                 }
                     
                 noise = noise / frequency;
