@@ -49,29 +49,29 @@ public class TerrainController : MonoBehaviour
                 UnityMainThread.wkr.AddJob(() => {
                     rootChunk = new Vector2((int)(player.transform.position.x / (size * sizeMultiplier)), (int)(player.transform.position.z / (size * sizeMultiplier)));
                 });  
-                Thread.Sleep(50);  
-                Debug.Log(rootChunk);
+                Thread.Sleep(100);  
                 
-                for(int x = (int)rootChunk.x; x <= (int)rootChunk.x + 2; x++)
+                for(int x = (int)rootChunk.x - 2; x <= (int)rootChunk.x + 2; x++)
                 {
-                    for(int z = (int)rootChunk.y; z <= (int)rootChunk.y + 2; z++)
+                    for(int z = (int)rootChunk.y - 2; z <= (int)rootChunk.y + 2; z++)
                     {
                         Vector2 areaChunk = new Vector2(rootChunk.x + x, rootChunk.y + z);
+                        Debug.Log(areaChunk);
                         
                         if(!instantiatedChunks.ContainsKey(areaChunk))
                         {
-                            instantiatedChunks.Add(areaChunk, null);
-                            noiseMap = Noise.GenerateNoiseMap(size, size, scale, octaves, redistribuition, areaChunk);
-                            instantiatedChunks[areaChunk] = noiseMap;
-                            noiseMap = FallOffGenerator.ApplyFallOffMap(noiseMap, size);
-
                             UnityMainThread.wkr.AddJob(() => {
+                                instantiatedChunks.Add(areaChunk, null);
+                                noiseMap = Noise.GenerateNoiseMap(size, size, scale, octaves, redistribuition, areaChunk);
+                                instantiatedChunks[areaChunk] = noiseMap;
+                                noiseMap = FallOffGenerator.ApplyFallOffMap(noiseMap, size);
                                 GameObject terrain = TerrainGenerator.GenerateTerrain(noiseMap, terrainMaterials, areaChunk, sizeMultiplier);
                                 // TerrainGenerator.GenerateTrees(terrain, tree);
 
                                 GameObject oceanTerrainChunk = GameObject.Instantiate(oceanChunk, terrain.transform.position, terrain.transform.rotation, terrain.transform);
                                 oceanTerrainChunk.transform.position = new Vector3(oceanTerrainChunk.transform.position.x + 175f, 4f, oceanTerrainChunk.transform.position.z + 175f);
-                            });                 
+                            });   
+                            Thread.Sleep(100);               
                         }
                     }
                 }

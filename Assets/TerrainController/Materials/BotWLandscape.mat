@@ -149,7 +149,7 @@ Material:
     - _SrcBlend: 1
     - _Surface: 0
     - _TesselationFactor: 8
-    - _TessellationGrassDistance: 0.25
+    - _TessellationGrassDistance: 2
     - _Width: 0.05
     - _WindFrequency: 0.005
     - _WindStrength: 0.5

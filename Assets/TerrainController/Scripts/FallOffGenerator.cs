@@ -18,7 +18,7 @@ public static class FallOffGenerator
 
                 // find which value is closer to the edge of the map
                 float value = Mathf.Max(Mathf.Abs(x), Mathf.Abs(y));
-                map[i, j] = Evaluate(value, 1f, 15f);
+                map[i, j] = Evaluate(value, 1f, 50f);
             }
         }
         return map;
