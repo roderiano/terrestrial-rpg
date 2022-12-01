@@ -115,13 +115,13 @@ Material:
     - _BladeForward: 0.38
     - _BladeHeight: 0.25
     - _BladeHeightDelta: 0.05
-    - _BladeHeightMax: 0.4
-    - _BladeHeightMin: 0.01
+    - _BladeHeightMax: 0.6
+    - _BladeHeightMin: 0.4
     - _BladeSegments: 1
     - _BladeWidth: 0.015
     - _BladeWidthDelta: 0.02
-    - _BladeWidthMax: 0.2
-    - _BladeWidthMin: 0.01
+    - _BladeWidthMax: 0.4
+    - _BladeWidthMin: 0.2
     - _Blend: 0
     - _BumpScale: 1
     - _ClearCoatMask: 0
@@ -138,6 +138,7 @@ Material:
     - _GrassFalloff: 0
     - _GrassThreshold: 0.078
     - _Height: 3
+    - _LODDistance: 1
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
@@ -149,7 +150,7 @@ Material:
     - _SrcBlend: 1
     - _Surface: 0
     - _TesselationFactor: 8
-    - _TessellationGrassDistance: 2
+    - _TessellationGrassDistance: 1.1
     - _Width: 0.05
     - _WindFrequency: 0.005
     - _WindStrength: 0.5
