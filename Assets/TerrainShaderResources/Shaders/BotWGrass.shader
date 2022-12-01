@@ -39,6 +39,11 @@ Shader "Custom/BotWGrass"
 		LOD 100
 		Cull Off
 
+		CGPROGRAM
+		#pragma vertex vert
+		#pragma fragment frag
+		ENDCG
+
 		HLSLINCLUDE
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
@@ -281,8 +286,9 @@ Shader "Custom/BotWGrass"
 			void geom(point VertexOutput input[1], inout TriangleStream<GeomData> triStream)
 			{
 				float grassVisibility = tex2Dlod(_GrassMap, float4(input[0].uv, 0, 0)).r;
+				float grassDistance = distance(_WorldSpaceCameraPos, mul(unity_ObjectToWorld, input[0].vertex));
 
-				if (grassVisibility >= _GrassThreshold)
+				if (grassDistance < 100)
 				{
 					float3 pos = input[0].vertex.xyz;
 

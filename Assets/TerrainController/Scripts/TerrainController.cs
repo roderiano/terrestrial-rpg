@@ -56,7 +56,6 @@ public class TerrainController : MonoBehaviour
                     for(int z = (int)rootChunk.y - 2; z <= (int)rootChunk.y + 2; z++)
                     {
                         Vector2 areaChunk = new Vector2(rootChunk.x + x, rootChunk.y + z);
-                        Debug.Log(areaChunk);
                         
                         if(!instantiatedChunks.ContainsKey(areaChunk))
                         {

@@ -7,7 +7,6 @@ public static class Noise
 
     public static float[,] GenerateNoiseMap(int _width, int _height, float _scale, int _octaves, float _redistribuition, Vector2 chunck)
     {
-        Debug.Log(chunck);
         float[,] noiseMap = new float[_width, _height];
 
         for (int y = 0; y < _height; y++)
