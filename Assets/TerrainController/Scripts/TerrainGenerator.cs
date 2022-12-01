@@ -87,7 +87,7 @@ public static class TerrainGenerator
         return uv;
     }
 
-    public static void GenerateTrees(GameObject terrain, GameObject tree) 
+    public static void GenerateTrees(GameObject terrain, GameObject tree, Vector2 areaChunk, float sizeMultiplier, float size) 
     {
         const int TREE_COUNT_PER_ISLAND = 10;
         
@@ -102,6 +102,8 @@ public static class TerrainGenerator
         while(treeCount < TREE_COUNT_PER_ISLAND)
         {
             Vector3 randomPosition = elegibleGroundPositions[Random.Range(0, elegibleGroundPositions.Count - 1)];
+            randomPosition = randomPosition + new Vector3(areaChunk.x * size * sizeMultiplier, 0, areaChunk.y * size * sizeMultiplier);
+
             Quaternion randomRotation = Quaternion.Euler(new Vector3(0, Random.Range(0f, 360f), 0));
             GameObject newTree = GameObject.Instantiate(tree, randomPosition, randomRotation);
             newTree.transform.localScale = Vector3.one * Random.Range(1.5f, 3.5f);

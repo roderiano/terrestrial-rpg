@@ -66,7 +66,7 @@ public class TerrainController : MonoBehaviour
                                 instantiatedChunks[areaChunk] = noiseMap;
                                 noiseMap = FallOffGenerator.ApplyFallOffMap(noiseMap, size);
                                 GameObject terrain = TerrainGenerator.GenerateTerrain(noiseMap, terrainMaterials, areaChunk, sizeMultiplier);
-                                // TerrainGenerator.GenerateTrees(terrain, tree);
+                                TerrainGenerator.GenerateTrees(terrain, tree, areaChunk, sizeMultiplier, size);
 
                                 GameObject oceanTerrainChunk = GameObject.Instantiate(oceanChunk, terrain.transform.position, terrain.transform.rotation, terrain.transform);
                                 oceanTerrainChunk.transform.position = new Vector3(oceanTerrainChunk.transform.position.x + 175f, 4f, oceanTerrainChunk.transform.position.z + 175f);
